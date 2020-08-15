@@ -1,0 +1,104 @@
+{
+  "voters": [
+    {
+      "id": 1,
+      "name": "Antoine",
+      "gender": "boy"
+    },
+    {
+      "id": 2,
+      "name": "Viviane",
+      "gender": "girl"
+    },
+    {
+      "id": 3,
+      "name": "Philippe",
+      "gender": "boy"
+    },
+    {
+      "id": 4,
+      "name": "Clement",
+      "gender": "boy"
+    },
+    {
+      "id": 5,
+      "name": "J-Phillipe",
+      "gender": "boy"
+    },
+    {
+      "id": 6,
+      "name": "Laura",
+      "gender": "girl"
+    },
+    {
+      "id": 7,
+      "name": "Mylene",
+      "gender": "girl"
+    },
+    {
+      "id": 8,
+      "name": "Benoit",
+      "gender": "boy"
+    },
+    {
+      "id": 9,
+      "name": "Hakima",
+      "gender": "girl"
+    },
+    {
+      "id": 10,
+      "name": "Birama",
+      "gender": "boy"
+    },
+    {
+      "id": 11,
+      "name": "Christine",
+      "gender": "girl"
+    },
+    {
+      "id": 12,
+      "name": "Nicolas",
+      "gender": "boy"
+    },
+    {
+      "id": 13,
+      "name": "Manuel",
+      "gender": "boy"
+    },
+    {
+      "id": 14,
+      "name": "Florent",
+      "gender": "boy"
+    },
+    {
+      "id": 14,
+      "name": "Aida",
+      "gender": "girl"
+    },
+    {
+      "id": 16,
+      "name": "Antonio",
+      "gender": "boy"
+    },
+    {
+      "id": 17,
+      "name": "Fanny",
+      "gender": "girl"
+    },
+    {
+      "id": 18,
+      "name": "Hocine",
+      "gender": "boy"
+    },
+    {
+      "id": 19,
+      "name": "Dominique",
+      "gender": "boy"
+    },
+    {
+      "id": 20,
+      "name": "Rachid",
+      "gender": "boy"
+    }
+  ]
+}

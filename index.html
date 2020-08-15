@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+<meta charset="UTF-8" />
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
+<script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
+<link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
+
+<div class="voter" style="margin-left: 2em; padding-top: 1em;" >
+
+    <input  id="username" type="text" name="username" placeholder="First-Name" />
+    <button onclick="vote();">Je Vote</button>
+
+    <span style="float: right; margin-right: 1em; font-size: 2em;" > SI INFOSOL TEAM </span>
+
+</div>
+
+<div class="gridly">
+
+ <!-- <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Antoine  </span> <a class="delete" href="#">×</a>  </div>
+  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Rachid   </span> <a class="delete" href="#">×</a>  </div>
+  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Phillipe </span> <a class="delete" href="#">×</a>  </div>
+  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Clement  </span> <a class="delete" href="#">×</a>  </div>
+  <div class="brick small" style="background-image: url(avatar-g-1.png);" > <span style="background:yellow"> Viviane  </span> <a class="delete" href="#">×</a>  </div
+  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Birama   </span> <a class="delete" href="#">×</a>  </div>-->
+  
+</div>
+
+
+<script>
+  
+   
+ function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+ function init() {
+    
+        var divs = document.getElementsByClassName('brick');
+
+        for(var i =0; i < divs.length; i++){
+        divs[i].style.backgroundColor = getRandomColor();
+        }
+
+        $('.gridly').gridly('draggable','on');
+
+        $('.gridly').gridly({
+            base: 60, 
+            gutter: 20, 
+            columns: 15,
+            
+        // drag handle
+        draggable: {
+            zIndex: 800,
+            selector: '> *'
+        }
+        
+        });
+            
+        $(document).on("click", ".gridly .delete", function(event) {
+            var $this;
+            event.preventDefault();
+            event.stopPropagation();
+            $this = $(this);
+            $this.closest('.brick').remove();
+            return $('.gridly').gridly('layout');
+        });
+
+
+        $('.brick').click(function () {
+
+            $this = $(this);
+            if ($($this).hasClass("large")) {} else {
+                if ($(".gridly").find(".large").length >= 2) {
+                    var large = $(".gridly").find(".large");
+                    $(large).toggleClass("large small");
+                    size = 140;
+                    $(large).data('width', size);
+                    $(large).data('height', size);
+                }
+            }
+            $this.toggleClass('large small');
+            size = $this.hasClass('small') ? 140 : 300;
+            $this.data('width', size);
+            $this.data('height', size);
+            // alert(($this).children("span").html())
+            return $('.gridly').gridly('layout');
+        });
+
+ }
+ 
+ var votersElm = document.getElementsByClassName('gridly');
+
+  fetch("assets/data/voters.json").then( response => response.json())
+                     .then( list  => {
+                     
+                                  list.voters.forEach ( voter => {
+                                  
+                                        var avatarGender = voter.gender == 'boy' ? 'avatar-b.png' : 'avatar-g-1.png' ;
+                                        
+                                        var vot = '<div class="brick small" style="background-image: url(' + avatarGender + 
+                                                  ') ; " > <span style="background:yellow"> '              + voter.name   +
+                                                  '</span> <a class="delete" href="#">×</a>  </div>'       ;
+                                        
+                                        var votElm = $.parseHTML( vot ) ;
+                                        
+                                        $( ".gridly" ).append( votElm ) ;
+                                        
+                                   });
+                            
+                          }
+                     ).then ( l => init() ) ;
+  
+function vote() {
+  
+  username = document.getElementById("username").value ;
+  
+  if( username.trim() ) {
+     
+        var animators = [];
+        $(".gridly").find(".large").each(function() {
+           animators.push( $(this).children("span").html() ) ;
+        });
+        
+       if( animators.length == 0 ) {
+         alert("Missing Animators - At least One !! ") ; return ;
+       }
+
+       
+       alert( animators ) ;
+       
+       window.location = "stats.html" ;
+     
+  } else {
+  
+    alert("Missing UserName !! ") ; return ;
+  }
+  
+}
+
+
+</script>
+
+</head>
+
+</html>
