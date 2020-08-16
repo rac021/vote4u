@@ -36,7 +36,8 @@
 
 <script>
   
-   
+ var endpoint ;
+ 
  function getRandomColor() {
     var letters = '0123456789ABCDEF'.split('');
     var color = '#';
@@ -104,23 +105,25 @@
  var votersElm = document.getElementsByClassName('gridly');
 
   fetch("assets/data/voters.json").then( response => response.json())
-                     .then( list  => {
+                                  .then( list  => {
                      
-                                  list.voters.sort( () => Math.random() - 0.5 ).forEach ( voter => {
-                                  
-                                        var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g-1.png' ;
+                                         list.voters.sort( () => Math.random() - 0.5 ).forEach ( voter => {
                                         
-                                        var vot = '<div class="brick small" style="background-image: url(' + avatarGender + 
-                                                  ') ; " > <span style="background:yellow"> '              + voter.name   +
-                                                  '</span> <a class="delete" href="#">×</a>  </div>'       ;
+                                                var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g-1.png' ;
+                                                
+                                                var vot = '<div class="brick small" style="background-image: url(' + avatarGender + 
+                                                          ') ; " > <span style="background:yellow"> '              + voter.name   +
+                                                          '</span> <a class="delete" href="#">×</a>  </div>'       ;
+                                                
+                                                var votElm = $.parseHTML( vot ) ;
+                                                
+                                                $( ".gridly" ).append( votElm ) ;
+                                                
+                                        } ) ;
                                         
-                                        var votElm = $.parseHTML( vot ) ;
-                                        
-                                        $( ".gridly" ).append( votElm ) ;
-                                        
-                                   });
+                                        endpoint = list.endpoint ;
                             
-                          }
+                                   }
                      ).then ( l => init() ) ;
   
 function vote() {
@@ -184,8 +187,7 @@ function vote() {
              cache: 'default'
          }
 
-         
-         var myRequest = new Request( this.endpoint + '/vote' , myInit )
+         var myRequest = new Request( endpoint + '/vote' , myInit )
 
          fetch(myRequest).then ( response => {
              
@@ -201,7 +203,6 @@ function vote() {
                                       'Something went wrong ! ' ,
                                       'error'
                                     )
-                                    
                           return ;
                                               
                    }) ;
@@ -213,6 +214,7 @@ function vote() {
          }).then ( function( response ) {
                           
                 let timerInterval
+                
                 Swal.fire({
                         title: 'You Voted : ' + animators ,
                         icon: 'success',
@@ -246,10 +248,10 @@ function vote() {
                 
                    window.location = "stats.html"     
 
-         }).catch(function(err) {
+         }).catch(function( err ) {
 
-                 Swal.fire(  err             ,
-                            'Click to close' ,
+                 Swal.fire(  'Error : ' + err ,
+                            'Click to close'  ,
                             'error'
                  )
          } ) ;
