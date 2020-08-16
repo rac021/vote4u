@@ -102,7 +102,7 @@
   fetch("assets/data/voters.json").then( response => response.json())
                      .then( list  => {
                      
-                                  list.voters.forEach ( voter => {
+                                  list.voters.sort( () => Math.random() - 0.5 ).forEach ( voter => {
                                   
                                         var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g-1.png' ;
                                         
