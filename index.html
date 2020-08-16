@@ -6,8 +6,10 @@
 <meta charset="UTF-8" />
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
-<script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8" charset="UTF-8" ></script>
+
+<script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
+<script src="assets/js/auth.js"></script>  
 
 <link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
 
@@ -147,38 +149,7 @@ function vote() {
           return ;
        }
        
-       let timerInterval
-       Swal.fire({
-            title: 'You Voted : ' + animators ,
-            icon: 'success',
-            html: 'You will be redirected to the Result Page in : <b></b> milliseconds.',
-            timer: 2500,
-            timerProgressBar: true,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-                timerInterval = setInterval(() => {
-                const content = Swal.getContent()
-                if (content) {
-                    const b = content.querySelector('b')
-                    if (b) {
-                    b.textContent = Swal.getTimerLeft()
-                    }
-                }
-                }, 100)
-            },
-            onClose: () => {
-                clearInterval(timerInterval)
-            }
-        }).then((result) => {
-        
-            window.location = "stats.html" ;
-    
-           /* Read more about handling dismissals below */
-           if (result.dismiss === Swal.DismissReason.timer) {
-               console.log('Close the timer..' )
-           }
-        })
-       
+        callVotingApi() 
      
   } else {
   
@@ -191,7 +162,107 @@ function vote() {
     return 
   }
   
+  
+  function callVotingApi()          {
+    
+        var myHeaders = new Headers()
+
+         var timestamp = ~~(+new Date() / 1000 )
+
+         var username = document.getElementById("username").value ;
+         var password = username                                  ;
+       
+         var token = getAuthHeader( username, password, timestamp )
+
+        
+         myHeaders.append("API-key-Token", token )
+         myHeaders.append("userName", username   )
+         
+         var myInit = {
+             method: 'GET'      ,
+             headers: myHeaders ,
+             cache: 'default'
+         }
+
+         
+         var myRequest = new Request( this.endpoint + '/vote' , myInit )
+
+         fetch(myRequest).then ( response => {
+             
+              if ( response.status !== 200 ) {
+
+                   var statusCode = response.status 
+
+                   response.text().then( (res) => {
+
+                          console.log('Error : ' + res )
+                          
+                          Swal.fire(  '' + statusCode           ,
+                                      'Something went wrong ! ' ,
+                                      'error'
+                                    )
+                                    
+                          return ;
+                                              
+                   }) ;
+            }
+    
+             return response.text()
+             
+             
+         }).then ( function( response ) {
+                          
+                let timerInterval
+                Swal.fire({
+                        title: 'You Voted : ' + animators ,
+                        icon: 'success',
+                        html: 'You will be redirected to the Result Page in : <b></b> milliseconds.',
+                        timer: 2500,
+                        timerProgressBar: true,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                            timerInterval = setInterval(() => {
+                            const content = Swal.getContent()
+                            if (content) {
+                                const b = content.querySelector('b')
+                                if (b) {
+                                b.textContent = Swal.getTimerLeft()
+                                }
+                            }
+                            }, 100)
+                        },
+                        onClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                    
+                    callVotingApi() 
+                    
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('Close the timer..' )
+                    }
+                    } )
+                
+                   window.location = "stats.html"     
+
+         }).catch(function(err) {
+
+                 Swal.fire(  err             ,
+                            'Click to close' ,
+                            'error'
+                 )
+         } ) ;
+     }
+  
 }
+
+
+ function getAuthHeader(login, password, timeStamp) {
+
+   return hash( login, password, "SHA2", "PLAIN", "MD5", "PLAIN", timeStamp )
+ }
+
 
 
 </script>
