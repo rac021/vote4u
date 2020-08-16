@@ -142,7 +142,7 @@ function vote() {
        });
        
 
-       if( animators.length == 0 ) {
+       if( animators.length == 0    ) {
        
           if( animators.length == 0 ) {
           
@@ -168,9 +168,9 @@ function vote() {
     return 
   }  
   
-  function callVotingApi()          {
+  function callVotingApi()           {
     
-        var myHeaders = new Headers()
+         var myHeaders = new Headers()
 
          var timestamp = ~~(+new Date() / 1000 )
 
@@ -189,6 +189,8 @@ function vote() {
              cache: 'default'
          }
 
+         console.log( "Call Endpoint : " +  endpoint + '/vote'    )
+         
          var myRequest = new Request( endpoint + '/vote' , myInit )
 
          fetch(myRequest).then ( response => {
@@ -201,54 +203,52 @@ function vote() {
 
                           console.log('Error : ' + res )
                           
-                          Swal.fire(  '' + statusCode           ,
-                                      'Something went wrong ! ' ,
+                          Swal.fire(  '' + statusCode  ,
+                                      '' + res         ,
                                       'error'
                                     )
                           return ;
                                               
-                   }) ;
+                   } ) ;
             }
     
              return response.text()
              
-             
          }).then ( function( response ) {
-                          
+
                 let timerInterval
                 
                 Swal.fire({
                         title: 'You Voted : ' + animators ,
                         icon: 'success',
                         html: 'You will be redirected to the Result Page in : <b></b> milliseconds.',
-                        timer: 2500,
+                        timer: 1400,
                         timerProgressBar: true,
                         onBeforeOpen: () => {
                             Swal.showLoading()
                             timerInterval = setInterval(() => {
-                            const content = Swal.getContent()
-                            if (content) {
-                                const b = content.querySelector('b')
-                                if (b) {
-                                b.textContent = Swal.getTimerLeft()
+                                const content = Swal.getContent()
+                                if (content) {
+                                    const b = content.querySelector('b')
+                                    if (b) {
+                                    b.textContent = Swal.getTimerLeft()
+                                    }
                                 }
-                            }
-                            }, 100)
+                            }, 100 )
                         },
                         onClose: () => {
                             clearInterval(timerInterval)
                         }
-                    }).then((result) => {
-                    
-                    callVotingApi() 
-                    
-                    /* Read more about handling dismissals below */
-                    if (result.dismiss === Swal.DismissReason.timer) {
-                        console.log('Close the timer..' )
-                    }
+                    } ).then( ( result ) => {
+
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('Close the timer..' )
+                        }
+                        
+                         window.location = "stats.html" 
                     } )
-                
-                   window.location = "stats.html"     
+                    
 
          }).catch(function( err ) {
 
@@ -264,8 +264,6 @@ function vote() {
 
    return hash( login, password, "SHA2", "PLAIN", "MD5", "PLAIN", timeStamp )
  }
-
-
 
 </script>
 

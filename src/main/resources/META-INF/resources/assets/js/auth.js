@@ -17,7 +17,7 @@ function hashData( data, algo ) {
 
 function hash(  login              ,
                 password           ,
-                algoSigneture      ,
+                algoSignature      ,
                 loginSignature     ,
                 passwordSignature  ,
                 timeStampSignature ,
@@ -25,12 +25,27 @@ function hash(  login              ,
 
     // var timestamp = ~~(+new Date() / 1000);
     var _login     = hashData(login, loginSignature)          ;
+    
+    if ( loginSignature != 'PLAIN' )       {
+         _login  = _login.replace(/^0+/, '')                  ;
+    }
+    
     var _password  = hashData(password, passwordSignature)    ;
+    
+    if ( passwordSignature != 'PLAIN' )          {
+         _password  = _password.replace(/^0+/, '')            ;
+    }
+        
     var _timestamp = hashData(timestamp, timeStampSignature)  ;
-    var Plaintoken = _login.concat(_password, _timestamp)     ;
+    
+    var Plaintoken = _login.concat(_password, _timestamp )    ;
 
-    var sign       = hashData(Plaintoken, algoSigneture)      ;
-        sign       = sign.replace(/^0+/, '')                  ;
+    var sign       = hashData(Plaintoken, algoSignature )     ;
+    
+    if ( algoSignature != 'PLAIN' )          {
+         sign       = sign.replace(/^0+/, '' )                ;
+    }
+
     return         login + " " +  _timestamp + " " + sign     ;
 }
 
