@@ -7,8 +7,8 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
 <script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
- 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8" charset="UTF-8" ></script>
+
 <link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
 
 <div class="voter" style="margin-left: 2em; padding-top: 1em;" >
@@ -27,7 +27,7 @@
   <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Phillipe </span> <a class="delete" href="#">×</a>  </div>
   <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Clement  </span> <a class="delete" href="#">×</a>  </div>
   <div class="brick small" style="background-image: url(avatar-g-1.png);" > <span style="background:yellow"> Viviane  </span> <a class="delete" href="#">×</a>  </div
-  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Birama   </span> <a class="delete" href="#">×</a>  </div>-->
+  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Birama   </span> <a class="delete" href="#">×</a>  </div> -->
   
 </div>
 
@@ -136,26 +136,22 @@ function vote() {
 
        if( animators.length == 0 ) {
        
-        Swal.fire( {
-                title: 'Missing Animators - At least One !',
-                width: 600,
-                padding: '3em',
-                background: '#fff',
-                backdrop: `
-                    rgba(0,0,123,0.4)
-                    left top
-                    no-repeat
-                `
-        })
+          if( animators.length == 0 ) {
+          
+            Swal.fire(
+              'Missing Animator Excepion !',
+              'Please, select at least one Animator ',
+              'warning'
+            )} 
         
-        return ;
+          return ;
        }
-
        
        let timerInterval
        Swal.fire({
             title: 'You Voted : ' + animators ,
-            html: 'You will be redirect to the Result Page in : <b></b> milliseconds.',
+            icon: 'success',
+            html: 'You will be redirected to the Result Page in : <b></b> milliseconds.',
             timer: 2500,
             timerProgressBar: true,
             onBeforeOpen: () => {
@@ -186,19 +182,13 @@ function vote() {
      
   } else {
   
-    Swal.fire( {
-                title: 'Missing Your UserName !',
-                width: 600,
-                padding: '3em',
-                background: '#fff',
-                backdrop: `
-                    rgba(0,0,123,0.4)
-                    left top
-                    no-repeat
-                `
-    })
-        
-    return ;
+    Swal.fire (
+              'Missing UserName Excepion !',
+              'Please, set your UserName Before Voting ',
+              'warning'
+    ) 
+                    
+    return 
   }
   
 }
