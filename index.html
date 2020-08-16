@@ -7,11 +7,13 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
 <script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+ 
 <link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
 
 <div class="voter" style="margin-left: 2em; padding-top: 1em;" >
 
-    <input  id="username" type="text" name="username" placeholder="First-Name" />
+    <input  id="username" type="text" name="username" placeholder="UserName" />
     <button onclick="vote();">Je Vote</button>
 
     <span style="float: right; margin-right: 1em; font-size: 2em;" > SI INFOSOL TEAM </span>
@@ -123,25 +125,80 @@ function vote() {
   
   username = document.getElementById("username").value ;
   
-  if( username.trim() ) {
+  if( username.trim() )   {
      
-        var animators = [];
-        $(".gridly").find(".large").each(function() {
-           animators.push( $(this).children("span").html() ) ;
-        });
-        
+       var animators = [] ;
+       
+       $(".gridly").find(".large").each(function() {
+          animators.push( $(this).children("span").html() ) ;
+       });
+       
+
        if( animators.length == 0 ) {
-         alert("Missing Animators - At least One !! ") ; return ;
+       
+        Swal.fire( {
+                title: 'Missing Animators - At least One !',
+                width: 600,
+                padding: '3em',
+                background: '#fff',
+                backdrop: `
+                    rgba(0,0,123,0.4)
+                    left top
+                    no-repeat
+                `
+        })
+        
+        return ;
        }
 
        
-       alert( animators ) ;
+       let timerInterval
+       Swal.fire({
+            title: 'Your Vote : ' + animators ,
+            html: 'You will be redirect to the Result Page in : <b></b> milliseconds.',
+            timer: 2500,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+                timerInterval = setInterval(() => {
+                const content = Swal.getContent()
+                if (content) {
+                    const b = content.querySelector('b')
+                    if (b) {
+                    b.textContent = Swal.getTimerLeft()
+                    }
+                }
+                }, 100)
+            },
+            onClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+        
+            window.location = "stats.html" ;
+    
+           /* Read more about handling dismissals below */
+           if (result.dismiss === Swal.DismissReason.timer) {
+               console.log('Close the timer..' )
+           }
+        })
        
-       window.location = "stats.html" ;
      
   } else {
   
-    alert("Missing UserName !! ") ; return ;
+    Swal.fire( {
+                title: 'Missing Your UserName !',
+                width: 600,
+                padding: '3em',
+                background: '#fff',
+                backdrop: `
+                    rgba(0,0,123,0.4)
+                    left top
+                    no-repeat
+                `
+    })
+        
+    return ;
   }
   
 }
