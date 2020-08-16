@@ -31,6 +31,7 @@ body, html {
     height: 300px;
     border: double;
     border-width: 0.2em 0.2em;
+    border-color: crimson;
 }
 
 .gridly .brick {
