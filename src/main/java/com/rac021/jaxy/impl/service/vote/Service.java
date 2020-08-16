@@ -13,7 +13,7 @@ import javax.ws.rs.HeaderParam ;
 import javax.ws.rs.core.UriInfo ;
 import javax.ws.rs.core.Context ;
 import javax.ws.rs.core.Response ;
-import io.quarkus.arc.Unremovable;
+import io.quarkus.arc.Unremovable ;
 import javax.annotation.PostConstruct ;
 import com.rac021.jaxy.api.security.Policy ;
 import com.rac021.jaxy.api.security.Secured ;

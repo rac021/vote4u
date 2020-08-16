@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Bean ;
 import java.time.format.DateTimeFormatter ;
 import com.rac021.jaxy.api.security.Policy ;
 import com.rac021.jaxy.api.security.Custom ;
+import com.rac021.jaxy.api.security.Secured ;
 import com.rac021.jaxy.api.security.ISignOn ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.enterprise.inject.spi.BeanManager ;
@@ -69,7 +70,9 @@ public class RootService implements IRootService     {
     @Inject
     BeanManager bm           ;
 
-    public static Map<String, Object> services = new HashMap<>()  ;
+    public static Map<String, Object> services         = new HashMap<>() ;
+    
+    public static Map<String, Policy> servicesPolicies = new HashMap<>() ;
             
     public RootService()     {
     }
@@ -79,16 +82,15 @@ public class RootService implements IRootService     {
         
         System.out.println( " ++ Init Root Service" ) ;
        
-        register ( "time" ,  com.rac021.jaxy.coby.impl.service.time.ServiceTime.class  ) ;
-        register ( "vote"  , com.rac021.jaxy.impl.service.vote.Service.class ) ;
+        register ( "time"   , com.rac021.jaxy.coby.impl.service.time.ServiceTime.class  ) ;
+        register ( "vote"   , com.rac021.jaxy.impl.service.vote.Service.class           ) ;
+        register ( "voters" , com.rac021.jaxy.impl.service.voters.Service.class         ) ;
     }
 
     @Override
     @Path( SERVICENAME   )
     public Object subResourceLocators( @HeaderParam("API-key-Token")   String             token     ,
                                        @HeaderParam("Accept")          String             accept    ,
-                                       @HeaderParam("Cipher")          String             cipher    ,
-                                       @HeaderParam("Keep")            String             keep      ,
                                        @Context                        HttpServletRequest request   ,
                                        @PathParam(SERVICENAME_P) final String             codeService ) throws BusinessException {
 
@@ -108,37 +110,40 @@ public class RootService implements IRootService     {
                     "( token : {4} ) ( Date : {5} ) ( RemoteAddr : {6} ) " ,
                     new Object[] { codeService , 
                                    accept      ,
-                                   cipher      , 
-                                   keep        ,
                                    token       , 
                                    LocalDateTime.now()
                                                 .format( DateTimeFormatter
                                                 .ofPattern("dd/MM/yyyy HH:mm:ss")) ,
                                    getRemoteAddr(request) } ) ;
                 
-        return checkAuthAndProcessService ( codeService, accept, token, cipher) ;
+        return checkAuthAndProcessService ( codeService, accept, token ) ;
     }
   
     private Object checkAuthAndProcessService ( final String codeService , 
                                                 final String accept      ,
-                                                final String token       , 
-                                                final String cipher      ) throws BusinessException {
+                                                final String token       ) throws BusinessException {
       
-        Policy policy =  Policy.CustomSignOn                                        ;
+        Policy policy   =  servicesPolicies.get( codeService )    ;
         
-        if( policy == null ) throw new BusinessException("Unavailable Service")     ;
-        
-            
-        if( policy == Policy.Public )                             {
+        if( policy == null || policy == Policy.Public )                             {
             
             if( accept != null && accept.contains("encrypted") )  {
                 throw new BusinessException(" Public Services can't be Encrypted ") ;
             }
            
-            return services.get(codeService) ;
+            if( ! services.containsKey( codeService )) {
+                throw new BusinessException("Unavailable Service") ;
+            }
+            
+            return services.get(codeService ) ;
         }
         
         if( policy == Policy.SSO ) {
+            
+            if( ! services.containsKey( codeService )) {
+                throw new BusinessException("Unavailable Service") ;
+            }
+            
             return services.get(codeService) ;
         }
 
@@ -161,22 +166,14 @@ public class RootService implements IRootService     {
             
             if ( implSignOn.checkIntegrity ( token ,
                                              30L /*implSignOn.getConfigurator().getValidRequestTimeout()*/  ) ) {
-                
-                if( cipher == null ) {
-                  //  LOGGER.log(Level.INFO , " -- Default cipher activated : {0}", CipherTypes.AES_128_ECB.name()) ;
-                 //   ISignOn.CIPHER.set( CipherTypes.AES_128_ECB.name() ) ;
-                }
-                else {
-                 //   ISignOn.CIPHER.set(cipher.trim())  ; 
-                }
 
                 return services.get(codeService) ; // ServiceSensorThings.class ; // servicesManager.get(codeService) ;
             }
         }
         
         LOGGER.log( Level.SEVERE, " --- Unauthorized Resource :" +
-                                  " ( code_service : {0} ) ( accept : {1} ) ( cipher : {2} ) ( token : {3} ) " ,
-                                 new Object[] { codeService, accept, cipher, token } )       ;
+                                  " ( code_service : {0} ) ( accept : {1} ) ( token : {2} ) " ,
+                                 new Object[] { codeService, accept, token } )       ;
         
         throw new UnAuthorizedResourceException ("Unauthorized Resource - KO_Authentication") ;
     }
@@ -184,11 +181,11 @@ public class RootService implements IRootService     {
     @GET
     @Override
     @Path(LOGIN + SEPARATOR + SIGNATURE + SEPARATOR + TIMESTAMP )
-    public Response authenticationCheck( @PathParam("login")     final String login     ,
-                                         @PathParam("signature") final String signature ,
-                                         @PathParam("timeStamp") final String timeStamp) throws BusinessException {
+    public Response authenticationCheck(  @PathParam("login")     final String login     ,
+                                          @PathParam("signature") final String signature ,
+                                          @PathParam("timeStamp") final String timeStamp ) throws BusinessException {
 
-        if ( signOn.select(new AnnotationLiteral<Custom>() {}).get().checkIntegrity(login, timeStamp, signature)) {
+        if ( signOn.select(new AnnotationLiteral<Custom>() {}).get().checkIntegrity(login, timeStamp, signature ) ) {
             
              return Response.status ( Response.Status.OK )
                             .entity ( "<status> OK_Authentication </status>" )
@@ -198,9 +195,9 @@ public class RootService implements IRootService     {
         throw new UnAuthorizedResourceException ("KO_Authentication") ;
     }
     
-    private String getRemoteAddr( HttpServletRequest request ) {
+    private String getRemoteAddr( HttpServletRequest request )   {
 
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");  
+        String ipAddress = request.getHeader("X-FORWARDED-FOR" ) ;  
         if (ipAddress == null) {  
            return request.getRemoteAddr();  
         }
@@ -214,9 +211,18 @@ public class RootService implements IRootService     {
         return url.split("://", 2)[1].split(":",2)[0]    ;
     }
      
-    public Object getInstance(Class<?> serviceClazz ) {
+    public Object getInstance( String   serviceKey      ,
+                               Class<?> serviceClazz  ) {
        
-        ServiceRegistry serviceRegistry = serviceClazz.getAnnotation( ServiceRegistry.class       ) ; 
+        ServiceRegistry serviceRegistry = serviceClazz.getAnnotation( ServiceRegistry.class     ) ; 
+       
+        Secured security  = serviceClazz.getAnnotation( Secured.class )                           ;
+        if( security != null ) {
+            servicesPolicies.put( serviceKey, security.policy() ) ;
+        } else {
+            servicesPolicies.put( serviceKey, null ) ;
+        }
+        
         Bean<Object> bean = (Bean<Object>) bm.resolve(bm.getBeans(serviceClazz, serviceRegistry ) ) ;
 
         if ( bean != null ) {
@@ -230,9 +236,9 @@ public class RootService implements IRootService     {
 
         return null                     ;
     }
-
+    
     private void register( String serviceKey , Class aClass ) {
-        Object service = getInstance( aClass )                ;
+        Object service = getInstance( serviceKey , aClass   ) ;
         Objects.requireNonNull( service )                     ;
         services.put( serviceKey , service )                  ;
     }

@@ -35,54 +35,57 @@
 
 
 <script>
-  
- var endpoint ;
- 
- var votersElm = document.getElementsByClassName('gridly');
 
-  fetch("assets/data/voters.json").then( response => response.json())
-                                  .then( list  => {
+ var url = window.location.href
+
+ var arr = url.split("/") 
+
+ var domain = arr[0] + "//" + arr[2]
+
+ var endpoint = domain + "/rest/resources"
+ 
+ var votersElm = document.getElementsByClassName('gridly')
+
+ fetch( endpoint + "/" + "voters" ).then( response => response.json())
+                                   .then( list  => {
                      
                                          list.voters.sort( () => Math.random() - 0.5 ).forEach ( voter => {
                                         
-                                                var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g-1.png' ;
+                                                var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g.png' 
                                                 
                                                 var vot = '<div class="brick small" style="background-image: url(' + avatarGender + 
                                                           ') ; " > <span style="background:yellow"> '              + voter.name   +
-                                                          '</span> <a class="delete" href="#">×</a>  </div>'       ;
+                                                          '</span> <a class="delete" href="#">×</a>  </div>' 
                                                 
-                                                var votElm = $.parseHTML( vot ) ;
+                                                var votElm = $.parseHTML( vot )
                                                 
-                                                $( ".gridly" ).append( votElm ) ;
+                                                $( ".gridly" ).append( votElm ) 
                                                 
                                         } ) ;
-                                        
-                                        endpoint = list.endpoint ;
-                                    }
-                     ).then ( l =>  {
+
+                                 }).then ( l =>  {
                      
-                        setTimeout ( function() { init(); } , 0 ) ;
-                                     
+                                   setTimeout ( function() { init(); } , 0 ) 
                      } ) ;
   
  function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
+    var letters = '0123456789ABCDEF'.split('')
     var color = '#';
     for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
+        color += letters[Math.floor(Math.random() * 16)]
     }
     return color;
  }
 
  function init() {
     
-        var divs = document.getElementsByClassName('brick');
+        var divs = document.getElementsByClassName('brick')
 
         for(var i =0; i < divs.length; i++ ) {
-            divs[i].style.backgroundColor = getRandomColor();
+            divs[i].style.backgroundColor = getRandomColor()
         }
 
-        $('.gridly').gridly('draggable','on');
+        $('.gridly').gridly('draggable','on')
 
         $('.gridly').gridly ({
             base: 60, 

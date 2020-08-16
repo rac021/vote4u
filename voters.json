@@ -99,7 +99,12 @@
       "id": 20,
       "name": "Rachid",
       "gender": "boy"
+    },
+    {
+      "id": 21,
+      "name": "Damien",
+      "gender": "boy"
     }
-  ],
-  "endpoint":"http://127.0.0.1:8080/rest/resources"
+  ]
 }
+
