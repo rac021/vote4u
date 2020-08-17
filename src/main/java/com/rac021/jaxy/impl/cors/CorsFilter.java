@@ -1,5 +1,5 @@
 
-package com.rac021.jaxy.coby.impl.cors ;
+package com.rac021.jaxy.impl.cors ;
 
 /**
  *
