@@ -52,6 +52,19 @@
             <artifactId>quarkus-undertow</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-undertow-websockets</artifactId>
+        </dependency>
+        
+<!--        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20200518</version>
+            <type>jar</type>
+        </dependency>-->
+        
+        
     </dependencies>
     
     <build>

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 
-<html>
+<html style=" background: linear-gradient(#13161b5c, #9198e5); height: 98%;" >
 
 <head>
 
@@ -8,18 +8,31 @@
 
   <script src="assets/js/canvasjs.min.js"></script>
 
+  <script src="assets/js/auth.js"></script>  
+  
+  <script src="assets/js/eventsource-polyfill.js"></script>
+       
+
+
 </head>
 
 <script>
 
-window.onload = function () {
+ window.onload = function () {
 
 function compareDataPointYAscend(dataPoint1, dataPoint2) {
-		return dataPoint2.y - dataPoint1.y;
+		 return dataPoint2.y - dataPoint1.y
 }
 
- 
+ var userName = sessionStorage.getItem("userName" ) 
+
+ var endpoint = sessionStorage.getItem("endPoint" ) 
+
+ sessionStorage.removeItem("userName")
+
 var chart = new CanvasJS.Chart("chartContainer", {
+
+    backgroundColor: "#F5DEB3",
 	animationEnabled: true,
 	theme: "light2",
 	title: {
@@ -47,53 +60,83 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		xValueFormatString: "MMMM YYYY",
 		yValueFormatString: "",
 		dataPoints: [
-			{ y: 10, label:"A"},
-			{ y: 9,  label:"B"  },
-			{ y: 7,  label:"C" },
-			{ y: 5,  label:"D" },
-			{ y: 1,  label:"E" },
-			{ y: 3, label:"F" },
-			{ y: 7,  label:"G" },
-			{ y: 7,  label:"H" },
-			{ y: 20,  label:"I" },
-			{ y: 7,  label:"J" },
-			{ y: 7,  label:"K" },
-			{ y: 7,  label:"L" },
-			{ y: 7,  label:"M" },
-			{ y: 7,  label:"N" },
-			{ y: 7,  label:"O" },
-			{ y: 7,  label:"O" },
-			{ y: 7,  label:"Q" },
-			{ y: 7,  label:"R" },
-			{ y: 7,  label:"S" },
-			{ y: 11,  label:"T"}
 		]
 	}, 
 	]
 });
 
-chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
-	
-chart.render();
+ chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
+
+ chart.render()
+ 
+ call_stats()
+
+
+function call_stats() {
+              
+         var myHeaders = new Headers()
+
+         var timestamp = ~~( +new Date() / 1000 )
+
+         var token = getAuthHeader( userName , userName, timestamp )
+   
+         myHeaders.append( "API-key-Token", token )
+       
+         var eventSourceInitDict = { headers: { 'API-key-Token': token } } 
+        
+         var events = new  window.EventSourcePolyfill( endpoint + '/stats',  eventSourceInitDict )  
+      
+         events.onopen = (e) => {
+           console.log("Connection on Stats Opened ") 
+           
+         }
+         
+         events.onmessage = ( {data} ) =>  {
+             
+             console.log("data : " +  data )
+
+             var graph = chart.options.data[0].dataPoints = JSON.parse( data )
+              
+             graph =  JSON.parse( data ) 
+             
+             chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
+
+             chart.render()
+
+         }
+       
+         events.onerror = ( e ) =>  {
+           console.log("Error : " + JSON.stringify(e) ) 
+           events.close()                               
+         }
+  }
 
 function addSymbols(e) {
-	var suffixes = ["", "K", "M", "B"];
-	var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+
+	var suffixes = ["", "K", "M", "B"]
+	var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0 )
 
 	if( order > suffixes.length - 1 )                	
-		order = suffixes.length - 1 ;
+		order = suffixes.length - 1 
 
-	var suffix = suffixes[order];      
-	return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+	var suffix = suffixes[order]
+	return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix
 }
 
 function toggleDataSeries(e) {
+
 	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
+		e.dataSeries.visible = false
 	} else {
-		e.dataSeries.visible = true;
+		e.dataSeries.visible = true
 	}
-	e.chart.render();
+	e.chart.render()
+}
+
+
+function getAuthHeader(login, password, timeStamp) {
+
+   return hash( login, password, "SHA2", "PLAIN", "MD5", "PLAIN", timeStamp )
 }
 
 }

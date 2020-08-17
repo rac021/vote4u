@@ -17,7 +17,9 @@
 
     <input  id="username" type="text" name="username" placeholder="UserName" />
     <button onclick="vote();">Je Vote</button>
-
+  
+    <button onclick="alreadyVoted();">Déjà voté</button>
+ 
     <span style="float: right; margin-right: 1em; font-size: 1.5em;" > SI InfoSol Team ( V 2.0 ) </span>
 
 </div>
@@ -25,25 +27,24 @@
 <div class="gridly">
 
  <!-- <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Antoine  </span> <a class="delete" href="#">×</a>  </div>
-  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Rachid   </span> <a class="delete" href="#">×</a>  </div>
-  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Phillipe </span> <a class="delete" href="#">×</a>  </div>
-  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Clement  </span> <a class="delete" href="#">×</a>  </div>
-  <div class="brick small" style="background-image: url(avatar-g-1.png);" > <span style="background:yellow"> Viviane  </span> <a class="delete" href="#">×</a>  </div
-  <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Birama   </span> <a class="delete" href="#">×</a>  </div> -->
+      <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Rachid   </span> <a class="delete" href="#">×</a>  </div>
+ -->
   
 </div>
 
 
 <script>
 
- var url = window.location.href
+ var url       = window.location.href
 
- var arr = url.split("/") 
+ var arr       = url.split("/") 
 
- var domain = arr[0] + "//" + arr[2]
+ var domain    = arr[0] + "//" + arr[2]
 
- var endpoint = domain + "/rest/resources"
- 
+ var endpoint  = domain + "/rest/resources"
+
+ var animators = [] 
+     
  var votersElm = document.getElementsByClassName('gridly')
 
  fetch( endpoint + "/" + "voters" ).then( response => response.json())
@@ -66,11 +67,11 @@
                                  }).then ( l =>  {
                      
                                    setTimeout ( function() { init(); } , 0 ) 
-                     } ) ;
+                     } )
   
  function getRandomColor() {
     var letters = '0123456789ABCDEF'.split('')
-    var color = '#';
+    var color  = '#'
     for (var i = 0; i < 6; i++ ) {
         color += letters[Math.floor(Math.random() * 16)]
     }
@@ -101,12 +102,12 @@
         });
             
         $(document).on("click", ".gridly .delete", function(event) {
-            var $this;
-            event.preventDefault();
-            event.stopPropagation();
-            $this = $(this);
-            $this.closest('.brick').remove();
-            return $('.gridly').gridly('layout');
+            var $this
+            event.preventDefault()
+            event.stopPropagation()
+            $this = $(this)
+            $this.closest('.brick').remove()
+            return $('.gridly').gridly('layout')
         });
 
 
@@ -114,34 +115,32 @@
 
             $this = $(this);
             if ($($this).hasClass("large")) {} else {
-                if ($(".gridly").find(".large").length >= 2) {
-                    var large = $(".gridly").find(".large");
-                    $(large).toggleClass("large small");
-                    size = 140;
-                    $(large).data('width', size);
-                    $(large).data('height', size);
+                if ($(".gridly").find(".large").length >= 2 ) {
+                    var large = $(".gridly").find(".large")
+                    $(large).toggleClass("large small")
+                    size = 140
+                    $(large).data('width', size)
+                    $(large).data('height', size)
                 }
             }
-            $this.toggleClass('large small');
-            size = $this.hasClass('small') ? 140 : 300;
-            $this.data('width', size);
-            $this.data('height', size);
+            $this.toggleClass('large small')
+            size = $this.hasClass('small') ? 140 : 300 
+            $this.data('width', size)
+            $this.data('height', size)
             // alert(($this).children("span").html())
-            return $('.gridly').gridly('layout');
+            return $('.gridly').gridly('layout')
         });
 
  }
  
 function vote() {
   
-  username = document.getElementById("username").value ;
+  username = document.getElementById("username").value 
   
   if( username.trim() )   {
-     
-       var animators = [] ;
        
-       $(".gridly").find(".large").each(function() {
-          animators.push( $(this).children("span").html() ) ;
+       $(".gridly").find(".large").each(function()        {
+          animators.push( $(this).children("span").html() ) 
        });
        
 
@@ -149,11 +148,9 @@ function vote() {
        
           if( animators.length == 0 ) {
           
-            Swal.fire(
-              'Missing Animator Excepion !',
-              'Please, select at least one Animator ',
-              'warning'
-            )} 
+            Swal.fire ( 'Missing Animator Excepion !'           ,
+                        'Please, select at least one Animator ' ,
+                        'warning' )} 
         
           return ;
        }
@@ -162,29 +159,30 @@ function vote() {
      
   } else {
   
-    Swal.fire (
-              'Missing UserName Excepion !',
-              'Please, set your UserName Before Voting ',
-              'warning'
+    Swal.fire ( 'Missing UserName Excepion !'               ,
+                'Please, set your UserName Before Voting  ' ,
+                'warning'
     ) 
                     
     return 
-  }  
+  }
+
+ }
   
-  function callVotingApi()           {
-    
+ function callVotingApi()           {
+
          var myHeaders = new Headers()
 
          var timestamp = ~~(+new Date() / 1000 )
 
-         var username = document.getElementById("username").value ;
-         var password = username                                  ;
+         var username = document.getElementById("username").value 
+         var password = username                                  
        
          var token = getAuthHeader( username, password, timestamp )
 
-        
-         myHeaders.append("API-key-Token", token )
-         myHeaders.append("userName", username   )
+         myHeaders.append("API-key-Token", token     )
+         myHeaders.append("userName"     , username  )
+         myHeaders.append("animators"    , animators )
          
          var myInit = {
              method: 'GET'      ,
@@ -197,7 +195,7 @@ function vote() {
          var myRequest = new Request( endpoint + '/vote' , myInit )
 
          fetch(myRequest).then ( response => {
-             
+            
               if ( response.status !== 200 ) {
 
                    var statusCode = response.status 
@@ -213,7 +211,7 @@ function vote() {
                           return ;
                                               
                    } ) ;
-            }
+             }
     
              return response.text()
              
@@ -249,7 +247,10 @@ function vote() {
                             console.log('Close the timer..' )
                         }
                         
-                         window.location = "stats.html" 
+                        sessionStorage.setItem("userName", username )
+                        sessionStorage.setItem("endPoint", endpoint )
+                  
+                        window.location = "stats.html" 
                     } )
                     
 
@@ -260,8 +261,84 @@ function vote() {
                             'error'
                  )
          } ) ;
-     }
-}
+ }
+
+ function alreadyVoted()             {
+    
+         var myHeaders = new Headers()
+
+         var timestamp = ~~(+new Date() / 1000 )
+
+         var username = document.getElementById("username").value ;
+         var password = username                                  ;
+       
+         var token = getAuthHeader( username, password, timestamp )
+
+         myHeaders.append("API-key-Token", token     )
+         myHeaders.append("userName"     , username  )
+         myHeaders.append("animators"    , animators )
+         
+         var myInit = {
+             method: 'GET'      ,
+             headers: myHeaders ,
+             cache: 'default'
+         }
+
+         console.log( "Call Endpoint : " +  endpoint + '/vote'    )
+         
+         var myRequest = new Request( endpoint + '/vote/alreadyVoted' , myInit )
+
+         fetch(myRequest).then ( response => {
+            
+              if ( response.status == 200 )  {
+
+                  console.log ( username + " Already Voted ! -> Redirection " )
+                  
+                  sessionStorage.setItem("userName", username )
+                  sessionStorage.setItem("endPoint", endpoint )
+                  
+                  window.location = "stats.html" 
+                  return 
+              }
+              
+              if ( response.status == 404 )  {
+
+                  console.log ( username + " Already Voted ! -> Redirection " )
+                  
+                   Swal.fire( 'You Have Not Yet Voted !!'           ,
+                          'You have to vote before accessing Stats' ,
+                          'error' )
+
+                  return 
+              }
+              
+              else if ( response.status !== 200 )  {
+
+                   var statusCode = response.status 
+
+                   response.text().then( (res) =>  {
+
+                          console.log('Error : ' + res )
+                          
+                          Swal.fire(  '' + statusCode  ,
+                                      '' + res         ,
+                                      'error'
+                                    )
+                          return 
+                                              
+                   } ) ;
+             }
+    
+             return response.text()
+             
+         }).catch(function( err ) {
+
+                 Swal.fire( 'Error : ' + err  ,
+                            'Click to close'  ,
+                            'error'
+                 )
+         } ) ;
+ }
 
  function getAuthHeader(login, password, timeStamp) {
 

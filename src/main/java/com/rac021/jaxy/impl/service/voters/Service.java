@@ -55,5 +55,4 @@ public class Service   {
                        .entity( contentVotersInJSON )
                        .build() ;      
     }
-  
 }
