@@ -89,15 +89,16 @@
         $('.gridly').gridly('draggable','on')
 
         $('.gridly').gridly ({
+
             base: 60, 
             gutter: 20, 
             columns: 15,
             
-        // drag handle
-        draggable: {
-            zIndex: 800,
-            selector: '> *'
-        }
+            // drag handle
+            draggable: {
+                zIndex: 800,
+                selector: '> *'
+            }
         
         });
             
@@ -129,7 +130,7 @@
             $this.data('height', size)
             // alert(($this).children("span").html())
             return $('.gridly').gridly('layout')
-        });
+        } ) ;
 
  }
  
@@ -137,14 +138,15 @@ function vote() {
   
   username = document.getElementById("username").value 
   
+  animators.length = 0 // Clear Animators
+
   if( username.trim() )   {
        
        $(".gridly").find(".large").each(function()        {
           animators.push( $(this).children("span").html() ) 
-       });
-       
+       })
 
-       if( animators.length == 0    ) {
+       if ( animators.length == 0   ) {
        
           if( animators.length == 0 ) {
           

@@ -59,22 +59,32 @@ public class Service   {
                            .build() ;      
         }
         
-        if( voters.contains( userName.trim() ))      {
+        if( voters.contains( userName.trim() )) {
             
             return Response.status( Response.Status.FORBIDDEN )
                            .entity( "\n Already Voted \n" )
                            .build() ;      
         }
         
-        String[] animatorsNames = animators.split( "," ) ;
+        String[] animatorsNames = animators.split( "," )       ;
         
-        Stream.of( animatorsNames ).forEach( animator -> {
-            voteStats.compute( animator.trim().toLowerCase()       , 
-                               ( k, v ) -> v == null ? 1 : v + 1 ) ;
+        Set<String> alreadyVotedForAnimator =  new HashSet<>() ;
+        
+        Stream.of( animatorsNames ).forEach( animator ->       {
+            
+            if ( alreadyVotedForAnimator.contains( animator.trim().toLowerCase() )) {
+                
+                voteStats.compute( animator.trim().toLowerCase()       , 
+                                   ( k, v ) -> v == null ? 1 : v + 1 ) ;
+                
+                alreadyVotedForAnimator.add( animator.trim().toLowerCase() ) ;
+            }
 
         } ) ;
         
-        voters.add( userName.trim().toLowerCase()  )               ;
+        alreadyVotedForAnimator.clear()                      ;
+        
+        voters.add( userName.trim().toLowerCase()  )         ;
         
         return Response.status( Response.Status.OK )
                        .entity("\n Voted ! Thank You :-) \n" )
@@ -83,7 +93,7 @@ public class Service   {
   
     @GET
     @Path("/alreadyVoted")
-    @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted"  } )
+    @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted" } )
     public Response alreadyVoted ( @HeaderParam("API-key-Token") String token     , 
                                    @HeaderParam("animators" )    String animators , 
                                    @HeaderParam("userName"  )    String userName  , 

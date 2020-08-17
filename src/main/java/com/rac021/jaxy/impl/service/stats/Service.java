@@ -29,7 +29,7 @@ import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
  */
 
 @ServiceRegistry("stats")
-@Secured(policy = Policy.Public )
+@Secured(policy = Policy.CustomSignOn )
 @Singleton
 @Unremovable
 public class Service {
@@ -75,10 +75,9 @@ public class Service {
             @Override
             public void run() {
 
-               String statInJsonString  =  toJsonString( com.rac021.jaxy.impl.service.vote.Service.voteStats ) ;
+               String statInJsonString  =  toJsonString ( com.rac021.jaxy.impl.service.vote.Service.voteStats ) ;
                
-                System.out.println( "statInJsonString = " + statInJsonString );
-                broadcaster.broadcast ( sse.newEvent  (  statInJsonString ) ) ;
+               broadcaster.broadcast ( sse.newEvent  (  statInJsonString ) )  ;
             }
          } ;
 
@@ -91,9 +90,9 @@ public class Service {
      private static String toJsonString( Map<String, Integer> statVoters ) {
          
        return "[" + statVoters.entrySet().stream()
-                              .map( e -> " { \"y\": " +  String.valueOf( e.getValue()  + 
+                              .map( e -> " { \"y\": "   + String.valueOf( e.getValue() + 
                                          ", \"label\":" + "\"" + e.getKey() ) + "\" }" )
-                              .collect( Collectors.joining(", ") )        + " ]"   ;
+                              .collect( Collectors.joining(", ") )            + " ]"   ;
     }
      
 }
