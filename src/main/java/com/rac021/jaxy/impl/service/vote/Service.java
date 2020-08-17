@@ -72,7 +72,7 @@ public class Service   {
         
         Stream.of( animatorsNames ).forEach( animator ->       {
             
-            if ( alreadyVotedForAnimator.contains( animator.trim().toLowerCase() )) {
+            if ( ! alreadyVotedForAnimator.contains( animator.trim().toLowerCase() )) {
                 
                 voteStats.compute( animator.trim().toLowerCase()       , 
                                    ( k, v ) -> v == null ? 1 : v + 1 ) ;
