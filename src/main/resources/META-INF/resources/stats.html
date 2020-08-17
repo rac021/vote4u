@@ -12,7 +12,7 @@
   
   <script src="assets/js/eventsource-polyfill.js"></script>
        
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8" charset="UTF-8" ></script>
 
 </head>
 
@@ -30,7 +30,7 @@ function compareDataPointYAscend(dataPoint1, dataPoint2) {
 
  sessionStorage.removeItem("userName")
 
-var chart = new CanvasJS.Chart("chartContainer", {
+ var chart = new CanvasJS.Chart("chartContainer", {
 
     backgroundColor: "#F5DEB3",
 	animationEnabled: true,
@@ -65,9 +65,28 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	]
 });
 
- chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
+ chart.options.data[0].dataPoints.sort( compareDataPointYAscend )
 
  chart.render()
+ 
+ if ( userName == null ||  ! userName.trim() )  {
+
+    Swal.queue ( [ {
+        
+        title: 'Not Authorized !',
+        confirmButtonText: 'Ok'  ,
+        
+        text: 'Go to the index page' ,
+        showLoaderOnConfirm: true    ,
+
+        preConfirm: () =>    {
+        
+           setInterval(() => {  window.location = "index.html" }, 500 )
+        }
+    } ] )
+
+    return
+ }
  
  call_stats()
 
