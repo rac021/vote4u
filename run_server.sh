@@ -33,11 +33,11 @@
  
  RAND_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo`
  
- iVoteYouJar="i-vote-you-1.0-runner.jar"
+ iVoteYouJar="vote4u-1.0-runner.jar"
  
  if [ ! -f $iVoteYouJar ]; then 
    
-   iVoteYouJar="target/i-vote-you-1.0-runner.jar"
+   iVoteYouJar="target/vote4u-1.0-runner.jar"
    
     if [ ! -f $iVoteYouJar ]; then 
 
@@ -75,7 +75,7 @@
  
   # http.http2=false ( can be used in java 11+ )
   
-  echo "Deploying i-vote-you.. "
+  echo "Deploying vote4u... "
   echo
   
   java $DEBUG                                                           \

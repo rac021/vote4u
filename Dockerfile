@@ -26,7 +26,7 @@ COPY run_server.sh /app/
 
 RUN chmod +x /app/*.sh
 
-COPY --from=compilation_stage /tmp/target/i-vote-you-1.0-runner.jar /app/
+COPY --from=compilation_stage /tmp/target/vote4u-1.0-runner.jar /app/
 
 WORKDIR /app
 
