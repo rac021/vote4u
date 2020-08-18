@@ -75,7 +75,6 @@
  
   # http.http2=false ( can be used in java 11+ )
   
-  echo
   echo "Deploying i-vote-you.. "
   echo
   
