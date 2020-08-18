@@ -1,4 +1,4 @@
-# i-vote-u
+# vote4u
 
 ## Docker Deployment :
 
@@ -7,7 +7,7 @@
              -v $(pwd)/authentication.properties:/app/authentication.properties \
              -v $(pwd)/voters.json:/app/voters.json                             \
              -p 8080:8080                                                       \
-             -p 8585:8585 vote
+             -p 8585:8585  rac021/vote4u
 
 ```
 
