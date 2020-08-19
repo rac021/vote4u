@@ -1,5 +1,5 @@
 
-package com.rac021.jaxy.impl.service.voters ;
+package com.rac021.jaxy.impl.service.candidates ;
 
 /**
  *
@@ -26,22 +26,22 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * @author R.Yahiaoui
  */
 
-@ServiceRegistry("voters")
+@ServiceRegistry("candidates")
 @Secured(policy = Policy.Public )
 @Singleton
 @Unremovable
 public class Service   {
    
-    @ConfigProperty(name   = "votersFilePath", defaultValue = "voters.json" ) 
-    String votersFilePath ;
+    @ConfigProperty(name     = "candidatesFilePath", defaultValue = "candidates.json" ) 
+    String candidatesFilePath ;
     
-    String contentVotersInJSON = "" ;
+    String votersAsJSON = "" ;
     
     @PostConstruct
     public void init() throws IOException {
     
-      contentVotersInJSON = 
-              new String( Files.readAllBytes( Paths.get( votersFilePath ) ) ) ;
+      votersAsJSON = 
+              new String( Files.readAllBytes(Paths.get(candidatesFilePath ) ) ) ;
     }
 
     public Service()   {
@@ -51,8 +51,8 @@ public class Service   {
     @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted"   } )
     public Response cancel ( @HeaderParam("API-key-Token") String token ) throws Exception {    
         
-        return Response.status( Response.Status.OK )
-                       .entity( contentVotersInJSON )
+        return Response.status( Response.Status.OK  )
+                       .entity( votersAsJSON        )
                        .build() ;      
     }
 }

@@ -33,10 +33,10 @@ public class CustomSignOn implements ISignOn         {
          
     private static final Logger LOGGER = getLogger() ;
 
-    @ConfigProperty(name = "authentFilePath", defaultValue = "./authentication.prop" ) 
-    String authentFilePath ;
+    @ConfigProperty(name   = "authorizedVotersFilePath", defaultValue = "authorized-voters.properties" ) 
+    String authorizedVotersFilePath ;
     
-    private final Map<String, String> authorizationUsers = new HashMap<>() ;
+    private final Map<String, String> authorizedVoters = new HashMap<>() ;
     
     public CustomSignOn() {
     }
@@ -44,13 +44,14 @@ public class CustomSignOn implements ISignOn         {
     @PostConstruct
     public void init() throws IOException {
         
-        System.out.println( "Authentication File = " + authentFilePath ) ;
+        System.out.println("Authorized Voters FilePath = " + authorizedVotersFilePath ) ;
         
-        Properties properties = readPropertiesFile( authentFilePath );
-        authorizationUsers.putAll(properties.entrySet()
-                          .stream()
-                          .collect(Collectors.toMap( e -> e.getKey().toString().trim()   , 
-                                                     e -> e.getValue().toString().trim( ))) ) ;
+        Properties properties = readPropertiesFile( authorizedVotersFilePath   )        ;
+        
+        authorizedVoters.putAll(properties.entrySet()
+                        .stream()
+                        .collect(Collectors.toMap( e -> e.getKey().toString().trim()   , 
+                                                   e -> e.getValue().toString().trim( ))) ) ;
     }
     
     private final String SHA1   = "SHA1"  ;
@@ -92,9 +93,9 @@ public class CustomSignOn implements ISignOn         {
                                    String _clientSign  ) throws BusinessException {
       
         
-       if( ! authorizationUsers.containsKey( _login)) return false ;
+       if( ! authorizedVoters.containsKey( _login)) return false ;
        
-       String password = authorizationUsers.get( _login ) ;
+       String password = authorizedVoters.get( _login )          ;
   
        if ( password == null && password.trim() .isEmpty() ) return false         ;
        

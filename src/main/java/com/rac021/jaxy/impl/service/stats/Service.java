@@ -22,6 +22,7 @@ import javax.ws.rs.sse.SseBroadcaster ;
 import com.rac021.jaxy.api.security.Policy ;
 import com.rac021.jaxy.api.security.Secured ;
 import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
+import static com.rac021.jaxy.impl.service.vote.Service.voteStats ;
 
 /**
  *
@@ -39,10 +40,10 @@ public class Service {
     public void getStats ( @Context Sse sse                  ,
                            @Context SseEventSink eventSink   )  {
 
-         System.out.println( "\nStreamLoger Service... "  )     ;
-         Thread currentThread = Thread.currentThread()          ; 
+         System.out.println( "\nStats Service... "   )       ;
+         Thread currentThread = Thread.currentThread()       ; 
          
-         SseBroadcaster broadcaster =  sse.newBroadcaster()     ;
+         SseBroadcaster broadcaster =  sse.newBroadcaster()  ;
 
          broadcaster.register( eventSink ) ;
          
@@ -53,7 +54,6 @@ public class Service {
             if ( ! evSink.isClosed() ) evSink.close()        ;
             if ( ! currentThread.isInterrupted() )
                    currentThread.interrupt()                 ;
-         
          } ) ;
          
          broadcaster.onError( ( evSink , throwable ) ->  {
@@ -75,9 +75,9 @@ public class Service {
             @Override
             public void run() {
 
-               String statInJsonString  =  toJsonString ( com.rac021.jaxy.impl.service.vote.Service.voteStats ) ;
+               String statAsJsonString  =  toJsonString ( voteStats      )    ;
                
-               broadcaster.broadcast ( sse.newEvent  (  statInJsonString ) )  ;
+               broadcaster.broadcast ( sse.newEvent  (  statAsJsonString ) )  ;
             }
          } ;
 
@@ -87,12 +87,12 @@ public class Service {
          
     }
     
-     private static String toJsonString( Map<String, Integer> statVoters ) {
+     private static String toJsonString( Map<String, Integer> statVoteMap ) {
          
-       return "[" + statVoters.entrySet().stream()
-                              .map( e -> " { \"y\": "   + String.valueOf( e.getValue() + 
-                                         ", \"label\":" + "\"" + e.getKey() ) + "\" }" )
-                              .collect( Collectors.joining(", ") )            + " ]"   ;
+       return "[" + statVoteMap.entrySet().stream()
+                               .map( e -> " { \"y\": "   + String.valueOf( e.getValue() + 
+                                          ", \"label\":" + "\"" + e.getKey() ) + "\" }" )
+                               .collect( Collectors.joining(", ") )            + " ]"   ;
     }
      
 }

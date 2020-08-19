@@ -37,7 +37,7 @@ import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
 public class Service   {
    
     public static final ConcurrentMap<String, Integer> voteStats = new ConcurrentHashMap<>() ;
-    public static final Set<String> voters                       = new HashSet<>()           ;
+    public static final Set<String>                    voters    = new HashSet<>()           ;
     
     public Service()   {}
     
@@ -47,44 +47,52 @@ public class Service   {
     @GET
     @Path("/")
     @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted"  } )
-    public Response vote ( @HeaderParam("API-key-Token") String token     , 
-                           @HeaderParam("animators")     String animators , 
-                           @HeaderParam("userName")      String userName  , 
-                           @Context UriInfo uriInfo ) throws Exception    {
+    public Response vote ( @HeaderParam("API-key-Token") String token      , 
+                           @HeaderParam("candidates")    String candidates , 
+                           @HeaderParam("voter-name")    String voterName  , 
+                           @Context UriInfo uriInfo ) throws Exception     {
         
-        if( animators == null || animators.trim().isEmpty() )   {
+        if( candidates == null || candidates.trim().isEmpty() ) {
             
             return Response.status( Response.Status.BAD_REQUEST )
                            .entity( "\n Empty Vote not Authorized \n" )
                            .build() ;      
         }
         
-        if( voters.contains( userName.trim() )) {
+        if( voters.contains( voterName.trim() ) ) {
             
             return Response.status( Response.Status.FORBIDDEN )
                            .entity( "\n Already Voted \n" )
                            .build() ;      
         }
         
-        String[] animatorsNames = animators.split( "," )       ;
+        String[] animatorsNames = candidates.split( "," ) ;
         
-        Set<String> alreadyVotedForAnimator =  new HashSet<>() ;
-        
-        Stream.of( animatorsNames ).forEach( animator ->       {
+        if (  animatorsNames.length > 2 )               {
             
-            if ( ! alreadyVotedForAnimator.contains( animator.trim().toLowerCase() )) {
+            return Response.status( Response.Status.FORBIDDEN    )
+                           .entity( "\n The Candidate Number "   +
+                                    " Must be 1 or 2 \n"         )
+                           .build() ;      
+        }
+        
+        Set<String> alreadyVotedForCandidate =  new HashSet<>() ;
+        
+        Stream.of( animatorsNames ).forEach( animator ->        {
+            
+            if ( ! alreadyVotedForCandidate.contains( animator.trim().toLowerCase() )) {
                 
                 voteStats.compute( animator.trim().toLowerCase()       , 
                                    ( k, v ) -> v == null ? 1 : v + 1 ) ;
                 
-                alreadyVotedForAnimator.add( animator.trim().toLowerCase() ) ;
+                alreadyVotedForCandidate.add( animator.trim().toLowerCase() ) ;
             }
 
         } ) ;
         
-        alreadyVotedForAnimator.clear()                      ;
+        alreadyVotedForCandidate.clear()                     ;
         
-        voters.add( userName.trim().toLowerCase()  )         ;
+        voters.add( voterName.trim().toLowerCase()  )        ;
         
         return Response.status( Response.Status.OK )
                        .entity("\n Voted ! Thank You :-) \n" )
@@ -95,8 +103,8 @@ public class Service   {
     @Path("/alreadyVoted")
     @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted" } )
     public Response alreadyVoted ( @HeaderParam("API-key-Token") String token     , 
-                                   @HeaderParam("animators" )    String animators , 
-                                   @HeaderParam("userName"  )    String userName  , 
+                                   @HeaderParam("candidate"    ) String animators , 
+                                   @HeaderParam("voter-name"   ) String userName  , 
                                    @Context UriInfo uriInfo ) throws Exception    {
       
         if( voters.contains( userName.trim() ))           {

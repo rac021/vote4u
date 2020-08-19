@@ -15,7 +15,7 @@
 
 <div class="voter" style="margin-left: 2em; padding-top: 1em;" >
 
-    <input  id="username" type="text" name="username" placeholder="UserName" />
+    <input  id="voter-name" type="text" name="voter-name" placeholder="user-name" />
     <button onclick="vote();">Je Vote</button>
   
     <button onclick="alreadyVoted();">Déjà voté</button>
@@ -43,19 +43,19 @@
 
  var endpoint  = domain + "/rest/resources"
 
- var animators = [] 
+ var candidates = [] 
      
- var votersElm = document.getElementsByClassName('gridly')
+ // var votersElm = document.getElementsByClassName('gridly')
 
- fetch( endpoint + "/" + "voters" ).then( response => response.json())
+ fetch( endpoint + "/" + "candidates" ).then( response => response.json())
                                    .then( list  => {
                      
-                                         list.voters.sort( () => Math.random() - 0.5 ).forEach ( voter => {
+                                         list.candidates.sort( () => Math.random() - 0.5 ).forEach ( candidate => {
                                         
-                                                var avatarGender = voter.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g.png' 
+                                                var avatarGender = candidate.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g.png' 
                                                 
-                                                var vot = '<div class="brick small" style="background-image: url(' + avatarGender + 
-                                                          ') ; " > <span style="background:yellow"> '              + voter.name   +
+                                                var vot = '<div class="brick small vib" style="background-image: url('         + avatarGender    + 
+                                                          ') ; " > <span style="background:yellow; border-radius: 5px"> '  + candidate.name  +
                                                           '</span> <a class="delete" href="#">×</a>  </div>' 
                                                 
                                                 var votElm = $.parseHTML( vot )
@@ -70,6 +70,7 @@
                      } )
   
  function getRandomColor() {
+ 
     var letters = '0123456789ABCDEF'.split('')
     var color  = '#'
     for (var i = 0; i < 6; i++ ) {
@@ -136,22 +137,22 @@
  
 function vote() {
   
-  username = document.getElementById("username").value 
+  voterName = document.getElementById("voter-name").value 
   
-  animators.length = 0 // Clear Animators
+  candidates.length = 0 // Clear Animators
 
-  if( username.trim() )   {
+  if( voterName.trim() )   {
        
        $(".gridly").find(".large").each(function()        {
-          animators.push( $(this).children("span").html() ) 
+          candidates.push( $(this).children("span").html() ) 
        })
 
-       if ( animators.length == 0   ) {
+       if ( candidates.length == 0   ) {
        
-          if( animators.length == 0 ) {
+          if( candidates.length == 0 ) {
           
-            Swal.fire ( 'Missing Animator Excepion !'           ,
-                        'Please, select at least one Animator ' ,
+            Swal.fire ( 'Missing Candidate Excepion !'           ,
+                        'Please, select at least one Candidate ' ,
                         'warning' )} 
         
           return ;
@@ -177,14 +178,14 @@ function vote() {
 
          var timestamp = ~~(+new Date() / 1000 )
 
-         var username = document.getElementById("username").value 
-         var password = username                                  
+         var voterName = document.getElementById("voter-name").value 
+         var password = voterName                                  
        
-         var token = getAuthHeader( username, password, timestamp )
+         var token = getAuthHeader( voterName, password, timestamp )
 
-         myHeaders.append("API-key-Token", token     )
-         myHeaders.append("userName"     , username  )
-         myHeaders.append("animators"    , animators )
+         myHeaders.append("API-key-Token", token      )
+         myHeaders.append("voter-name"   , voterName  )
+         myHeaders.append("candidates"   , candidates )
          
          var myInit = {
              method: 'GET'      ,
@@ -222,7 +223,7 @@ function vote() {
                 let timerInterval
                 
                 Swal.fire({
-                        title: 'You Voted : ' + animators ,
+                        title: 'You Voted : ' + candidates ,
                         icon: 'success',
                         html: 'You will be redirected to the Result Page in : <b></b> milliseconds.',
                         timer: 1400,
@@ -249,8 +250,8 @@ function vote() {
                             console.log('Close the timer..' )
                         }
                         
-                        sessionStorage.setItem("userName", username )
-                        sessionStorage.setItem("endPoint", endpoint )
+                        sessionStorage.setItem("voterName" , voterName   )
+                        sessionStorage.setItem("endPoint"  , endpoint    )
                   
                         window.location = "stats.html" 
                     } )
@@ -271,14 +272,14 @@ function vote() {
 
          var timestamp = ~~(+new Date() / 1000 )
 
-         var username = document.getElementById("username").value ;
-         var password = username                                  ;
+         var voterName = document.getElementById("voter-name").value ;
+         var password  = voterName                                   ;
        
-         var token = getAuthHeader( username, password, timestamp )
+         var token = getAuthHeader( voterName, password, timestamp )
 
-         myHeaders.append("API-key-Token", token     )
-         myHeaders.append("userName"     , username  )
-         myHeaders.append("animators"    , animators )
+         myHeaders.append("API-key-Token", token      )
+         myHeaders.append("voter-name"   , voterName  )
+         myHeaders.append("candidates"   , candidates )
          
          var myInit = {
              method: 'GET'      ,
@@ -294,10 +295,10 @@ function vote() {
             
               if ( response.status == 200 )  {
 
-                  console.log ( username + " Already Voted ! -> Redirection " )
+                  console.log ( voterName + " Already Voted ! -> Redirection " )
                   
-                  sessionStorage.setItem("userName", username )
-                  sessionStorage.setItem("endPoint", endpoint )
+                  sessionStorage.setItem("voterName", voterName )
+                  sessionStorage.setItem("endPoint" , endpoint  )
                   
                   window.location = "stats.html" 
                   return 
@@ -305,7 +306,7 @@ function vote() {
               
               if ( response.status == 404 )  {
 
-                  console.log ( username + " Already Voted ! -> Redirection " )
+                  console.log ( voterName + " Already Voted ! -> Redirection " )
                   
                    Swal.fire( 'You Have Not Yet Voted !!'           ,
                           'You have to vote before accessing Stats' ,

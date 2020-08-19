@@ -24,11 +24,11 @@ function compareDataPointYAscend(dataPoint1, dataPoint2) {
 		 return dataPoint2.y - dataPoint1.y
 }
 
- var userName = sessionStorage.getItem("userName" ) 
+ var voterName     = sessionStorage.getItem("voterName" ) 
 
  var endpoint = sessionStorage.getItem("endPoint" ) 
 
- sessionStorage.removeItem("userName")
+ sessionStorage.removeItem("voterName")
 
  var chart = new CanvasJS.Chart("chartContainer", {
 
@@ -69,7 +69,7 @@ function compareDataPointYAscend(dataPoint1, dataPoint2) {
 
  chart.render()
  
- if ( userName == null ||  ! userName.trim() )  {
+ if ( voterName == null ||  ! voterName.trim() )  {
 
     Swal.queue ( [ {
         
@@ -97,8 +97,8 @@ function call_stats() {
 
          var timestamp = ~~( +new Date() / 1000 )
 
-         var token = getAuthHeader( userName , userName, timestamp )
-   
+         var token = getAuthHeader( voterName  , voterName, timestamp )
+
          myHeaders.append( "API-key-Token", token )
        
          var eventSourceInitDict = { headers: { 'API-key-Token': token } } 

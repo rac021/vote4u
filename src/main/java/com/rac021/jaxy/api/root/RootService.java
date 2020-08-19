@@ -82,10 +82,10 @@ public class RootService implements IRootService     {
         
         System.out.println( " ++ Init Root Service" ) ;
        
-        register ( "time"   , com.rac021.jaxy.impl.service.time.ServiceTime.class  ) ;
-        register ( "vote"   , com.rac021.jaxy.impl.service.vote.Service.class           ) ;
-        register ( "voters" , com.rac021.jaxy.impl.service.voters.Service.class         ) ;
-        register ( "stats"  , com.rac021.jaxy.impl.service.stats.Service.class          ) ;
+        register ( "time"       , com.rac021.jaxy.impl.service.time.ServiceTime.class    ) ;
+        register ( "vote"       , com.rac021.jaxy.impl.service.vote.Service.class        ) ;
+        register ( "candidates" , com.rac021.jaxy.impl.service.candidates.Service.class  ) ;
+        register ( "stats"      , com.rac021.jaxy.impl.service.stats.Service.class       ) ;
     }
 
     @Override

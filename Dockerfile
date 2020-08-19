@@ -24,6 +24,14 @@ RUN apt-get update && apt-get install psmisc
 
 COPY run_server.sh /app/
 
+## Default Example ########################
+
+COPY candidates.json /app/
+COPY authorized-voters.properties /app/
+
+###########################################
+###########################################
+
 RUN chmod +x /app/*.sh
 
 COPY --from=compilation_stage /tmp/target/vote4u-1.0-runner.jar /app/
