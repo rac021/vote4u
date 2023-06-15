@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 
 <html style=" background: linear-gradient(#13161b5c, #9198e5); height: 98%;" >
-
+  
 <head>
 
   <meta charset="UTF-8" />
@@ -21,12 +21,14 @@
  window.onload = function () {
 
 function compareDataPointYAscend(dataPoint1, dataPoint2) {
-		 return dataPoint2.y - dataPoint1.y
+     return dataPoint2.y - dataPoint1.y
 }
 
- var voterName     = sessionStorage.getItem("voterName" ) 
+ var voterName = sessionStorage.getItem("voterName" ) 
 
- var endpoint = sessionStorage.getItem("endPoint" ) 
+ var endpoint  = sessionStorage.getItem("endPoint" ) 
+
+ const elementsContainer = document.getElementById('voters');
 
  sessionStorage.removeItem("voterName")
 
@@ -36,7 +38,7 @@ function compareDataPointYAscend(dataPoint1, dataPoint2) {
 	animationEnabled: true,
 	theme: "light2",
 	title: {
-		text: "Total Votes / Person"
+		text: "Total Votes/Person"
 	},
 	axisX: {
 		valueFormatString: "MMM"
@@ -106,22 +108,60 @@ function call_stats() {
          var events = new  window.EventSourcePolyfill( endpoint + '/stats',  eventSourceInitDict )  
       
          events.onopen = (e) => {
-           console.log("Connection on Stats Opened ") 
-           
+            console.log("Connection on Stats Opened ") 
          }
-         
-         events.onmessage = ( {data} ) =>  {
+        
+        events.onmessage = ( {data} ) =>  {
              
-             console.log("data : " +  data )
+            // console.log("data : " +  data )
 
-             var graph = chart.options.data[0].dataPoints = JSON.parse( data )
+             var recievedData = JSON.parse(data) 
+             
+             var graph = chart.options.data[0].dataPoints = recievedData.stats
               
-             graph =  JSON.parse( data ) 
+             graph =  recievedData.stats
              
              chart.options.data[0].dataPoints.sort(compareDataPointYAscend);
 
              chart.render()
+            
+             elementsContainer.innerHTML = ''
+            
+            // Itération sur les paires clé-valeur de l'objet
+            let index = 0
+            const keys = Object.keys( recievedData.voters );
 
+            for (const voter in recievedData.voters ) {
+              
+              if ( recievedData.voters.hasOwnProperty(voter)) {
+                  
+                const value = recievedData.voters[voter]
+
+                const spanKey = document.createElement('span')
+                spanKey.textContent = voter
+
+                const spanValue = document.createElement('span')
+                spanValue.textContent = JSON.stringify(value)
+
+                // Ajout des classes CSS "even" et "odd" en fonction de la position
+                if (index % 2 === 0) {
+                  spanKey.classList.add('even')
+                  spanValue.classList.add('even')
+                } else {
+                  spanKey.classList.add('odd')
+                  spanValue.classList.add('odd')
+                }
+                elementsContainer.appendChild(spanKey)
+                elementsContainer.appendChild(document.createTextNode(':'))
+                elementsContainer.appendChild(spanValue)
+                
+                if ( index++ <  keys.length - 1 ) {
+                    elementsContainer.appendChild( document.createTextNode(' // ') )
+                }
+
+                // index++;
+              }
+           }
          }
        
          events.onerror = ( e ) =>  {
@@ -167,6 +207,27 @@ function getAuthHeader(login, password, timeStamp) {
  
   <div id="chartContainer" style=" height: 35em; max-width: 80em; padding: 2em; margin: 1em auto;  "></div> 
   
+  <div id="chartContainer" style=" height: 10em; max-width: 80em; padding: 2em; margin: 1em auto;  ">
+      <div id="voters"></div>
+  </div> 
+  
 </body>
+
+<style>
+    .even {
+      background-color: #d6d6ff;
+      color: black;
+      margin-left: 2px;
+      font-size: larger;
+      border-radius: 6px;
+    }
+    .odd {
+      background-color: #73cdff;
+      color: #111010;
+      margin: 4px;
+      font-size: larger;
+      border-radius: 6px;
+    }
+</style>
 
 </html>

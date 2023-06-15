@@ -11,7 +11,7 @@ ADD .   /tmp
 
 WORKDIR /tmp
 
-RUN mvn clean install
+RUN ./build.sh
 
 
 #########################

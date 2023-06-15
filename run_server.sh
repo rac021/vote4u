@@ -33,16 +33,16 @@
  
  RAND_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo`
  
- iVoteYouJar="vote4u-1.0-runner.jar"
+ iVote4YouJar="vote4u-1.0-runner.jar"
  
- if [ ! -f $iVoteYouJar ]; then 
+ if [ ! -f $iVote4YouJar ]; then 
    
-   iVoteYouJar="target/vote4u-1.0-runner.jar"
+   iVote4YouJar="target/vote4u-1.0-runner.jar"
    
-    if [ ! -f $iVoteYouJar ]; then 
+    if [ ! -f $iVote4YouJar ]; then 
 
        echo 
-       echo "iVoteYouJar not Found ! "
+       echo "iVote4YouJar not Found ! "
        echo 
        exit 
        
@@ -81,7 +81,7 @@
   java $DEBUG                                                           \
        -Dquarkus.http.ssl.certificate.key-store-file=$KEYSTORE_FILE     \
        -Dquarkus.http.ssl.certificate.key-store-password=$RAND_PASSWORD \
-       -jar $iVoteYouJar 
+       -jar $iVote4YouJar 
 
  # new_job_started="$(jobs -n)"
  

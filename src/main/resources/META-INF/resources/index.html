@@ -143,22 +143,19 @@ function vote() {
 
   if( voterName.trim() )   {
        
-       $(".gridly").find(".large").each(function()        {
+       $(".gridly").find(".large").each(function()         {
           candidates.push( $(this).children("span").html() ) 
        })
 
        if ( candidates.length == 0   ) {
        
-          if( candidates.length == 0 ) {
-          
             Swal.fire ( 'Missing Candidate Excepion !'           ,
                         'Please, select at least one Candidate ' ,
-                        'warning' )} 
-        
-          return ;
+                        'warning' )
+            return ;
        }
        
-        callVotingApi() 
+       callVotingApi() 
      
   } else {
   

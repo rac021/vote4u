@@ -6,9 +6,13 @@ package com.rac021.jaxy.impl.service.vote ;
  * @author ryahiaoui
  */
 
+import java.util.Map ;
 import java.util.Set ;
+import java.util.List ;
 import javax.ws.rs.GET ;
+import java.util.Arrays ;
 import javax.ws.rs.Path ;
+import java.util.HashMap ;
 import java.util.HashSet ;
 import javax.ws.rs.Produces ;
 import javax.inject.Singleton ;
@@ -37,7 +41,7 @@ import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
 public class Service   {
    
     public static final ConcurrentMap<String, Integer> voteStats = new ConcurrentHashMap<>() ;
-    public static final Set<String>                    voters    = new HashSet<>()           ;
+    public static final Map<String, List<String>>      voters    = new HashMap<>()           ;
     
     public Service()   {}
     
@@ -59,7 +63,7 @@ public class Service   {
                            .build() ;      
         }
         
-        if( voters.contains( voterName.trim() ) ) {
+        if( voters.keySet().contains( voterName.trim() ) ) {
             
             return Response.status( Response.Status.FORBIDDEN )
                            .entity( "\n Already Voted \n" )
@@ -92,7 +96,7 @@ public class Service   {
         
         alreadyVotedForCandidate.clear()                     ;
         
-        voters.add( voterName.trim().toLowerCase()  )        ;
+        voters.put( voterName.trim().toLowerCase() , Arrays.asList(animatorsNames) ) ;
         
         return Response.status( Response.Status.OK )
                        .entity("\n Voted ! Thank You :-) \n" )
@@ -107,7 +111,7 @@ public class Service   {
                                    @HeaderParam("voter-name"   ) String userName  , 
                                    @Context UriInfo uriInfo ) throws Exception    {
       
-        if( voters.contains( userName.trim() ))           {
+        if( voters.keySet().contains( userName.trim() ))  {
             
             return Response.status( Response.Status.OK    )
                            .entity( "\n Already Voted \n" )

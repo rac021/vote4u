@@ -7,6 +7,7 @@ package com.rac021.jaxy.impl.service.stats ;
  */
 
 import java.util.Map ;
+import java.util.List ;
 import javax.ws.rs.GET ;
 import java.util.Timer ;
 import java.util.TimerTask ;
@@ -22,6 +23,7 @@ import javax.ws.rs.sse.SseBroadcaster ;
 import com.rac021.jaxy.api.security.Policy ;
 import com.rac021.jaxy.api.security.Secured ;
 import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
+import static com.rac021.jaxy.impl.service.vote.Service.voters ;
 import static com.rac021.jaxy.impl.service.vote.Service.voteStats ;
 
 /**
@@ -75,9 +77,9 @@ public class Service {
             @Override
             public void run() {
 
-               String statAsJsonString  =  toJsonString ( voteStats      )    ;
+               String statAsJsonString  =  toJsonString ( voteStats , voters ) ;
                
-               broadcaster.broadcast ( sse.newEvent  (  statAsJsonString ) )  ;
+               broadcaster.broadcast ( sse.newEvent  (  statAsJsonString )   ) ;
             }
          } ;
 
@@ -87,12 +89,31 @@ public class Service {
          
     }
     
-     private static String toJsonString( Map<String, Integer> statVoteMap ) {
-         
-       return "[" + statVoteMap.entrySet().stream()
-                               .map( e -> " { \"y\": "   + String.valueOf( e.getValue() + 
-                                          ", \"label\":" + "\"" + e.getKey() ) + "\" }" )
-                               .collect( Collectors.joining(", ") )            + " ]"   ;
+    private static String toJsonString( Map<String, Integer> statVoteMap ,  Map<String, List<String> > voters ) {
+       
+       String statsAsJson = "\"stats\":[" + statVoteMap.entrySet().stream()
+                                                       .map( e -> " { \"y\": "   + String.valueOf( e.getValue() + 
+                                                                  ", \"label\":" + "\"" + e.getKey() ) + "\" }" )
+                                                       .collect( Collectors.joining(", ") )            + " ]"   ;
+       String votersAsJson = "\"voters\":" +  convertToJson(voters) ;
+       return "{" + statsAsJson + "," + votersAsJson + "}" ;
     }
      
+    public static String convertToJson(Map<String, List<String>> map) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        map.forEach((key, value) -> {
+            sb.append("\"").append(key).append("\":[");
+            value.forEach(item -> sb.append("\"").append(item).append("\","));
+            if (!value.isEmpty()) {
+                sb.deleteCharAt(sb.length() - 1) ;
+            }
+            sb.append("],");
+        });
+        if (!map.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1) ;
+        }
+        sb.append("}") ;
+        return sb.toString() ;
+    }
 }
