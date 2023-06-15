@@ -5,7 +5,7 @@
 # Step : Compile Jaxy ##
 ########################
 
-FROM maven:3.6.0-jdk-8-alpine as compilation_stage
+FROM maven:3.8.3-openjdk-17 as compilation_stage
 
 ADD .   /tmp
 
@@ -18,7 +18,7 @@ RUN ./build.sh
 # Step : Package image ##
 #########################
 
-FROM openjdk:8u181-jdk-stretch
+FROM openjdk:17.0.1-jdk-slim
 
 RUN apt-get update && apt-get install psmisc
 
