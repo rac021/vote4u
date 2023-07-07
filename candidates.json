@@ -2,13 +2,13 @@
   "candidates": [
     {
       "id": 1,
-      "name": "Antoine",
+      "name": "Alain C",
       "gender": "boy"
     },
     {
       "id": 2,
-      "name": "Viviane",
-      "gender": "girl"
+      "name": "Antoine",
+      "gender": "boy"
     },
     {
       "id": 3,
@@ -17,8 +17,8 @@
     },
     {
       "id": 4,
-      "name": "Clement",
-      "gender": "boy"
+      "name": "Hakima",
+      "gender": "girl"
     },
     {
       "id": 5,
@@ -27,84 +27,74 @@
     },
     {
       "id": 6,
-      "name": "Laura",
+      "name": "Lucile",
       "gender": "girl"
     },
     {
       "id": 7,
-      "name": "Mylene",
-      "gender": "girl"
+      "name": "Julien",
+      "gender": "boy"
     },
     {
       "id": 8,
-      "name": "Benoit",
+      "name": "Alain P",
       "gender": "boy"
     },
     {
       "id": 9,
-      "name": "Hakima",
-      "gender": "girl"
-    },
-    {
-      "id": 10,
-      "name": "Birama",
+      "name": "Yohann",
       "gender": "boy"
     },
     {
-      "id": 11,
+      "id": 10,
       "name": "Christine",
       "gender": "girl"
     },
     {
+      "id": 11,
+      "name": "Vivianne",
+      "gender": "girl"
+    },
+    {
       "id": 12,
-      "name": "Nicolas",
+      "name": "Birama",
       "gender": "boy"
     },
     {
       "id": 13,
+      "name": "Rachid",
+      "gender": "boy"
+    },
+    {
+      "id": 14,
       "name": "Manuel",
       "gender": "boy"
     },
     {
       "id": 14,
-      "name": "Florent",
+      "name": "Nicolas",
       "gender": "boy"
     },
     {
-      "id": 14,
-      "name": "Aida",
-      "gender": "girl"
-    },
-    {
       "id": 16,
-      "name": "Antonio",
+      "name": "Sébastien",
       "gender": "boy"
     },
     {
       "id": 17,
-      "name": "Fanny",
+      "name": "Line",
       "gender": "girl"
     },
     {
       "id": 18,
-      "name": "Hocine",
+      "name": "Benoit M",
       "gender": "boy"
     },
     {
       "id": 19,
-      "name": "Dominique",
+      "name": "Eoghann",
       "gender": "boy"
-    },
-    {
-      "id": 20,
-      "name": "Rachid",
-      "gender": "boy"
-    },
-    {
-      "id": 21,
-      "name": "Damien",
-      "gender": "boy"
-    }
+    }    
   ]
 }
 
