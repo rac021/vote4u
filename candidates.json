@@ -2,7 +2,7 @@
   "candidates": [
     {
       "id": 1,
-      "name": "Alain C",
+      "name": "Alain.C",
       "gender": "boy"
     },
     {
@@ -37,7 +37,7 @@
     },
     {
       "id": 8,
-      "name": "Alain P",
+      "name": "Alain.P",
       "gender": "boy"
     },
     {
@@ -87,7 +87,7 @@
     },
     {
       "id": 18,
-      "name": "Benoit M",
+      "name": "Benoit.M",
       "gender": "boy"
     },
     {
