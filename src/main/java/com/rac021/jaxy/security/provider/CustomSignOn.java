@@ -10,9 +10,11 @@ import javax.inject.Singleton ;
 import java.util.logging.Level ;
 import java.io.FileInputStream ;
 import java.util.logging.Logger ;
+import java.io.InputStreamReader ;
 import java.util.stream.Collectors ;
 import javax.annotation.PostConstruct ;
 import javax.transaction.Transactional ;
+import java.nio.charset.StandardCharsets ;
 import com.rac021.jaxy.api.crypto.Digestor ;
 import com.rac021.jaxy.api.security.Custom ;
 import com.rac021.jaxy.api.security.ISignOn ;
@@ -36,7 +38,7 @@ public class CustomSignOn implements ISignOn         {
     @ConfigProperty(name   = "authorizedVotersFilePath", defaultValue = "authorized-voters.properties" ) 
     String authorizedVotersFilePath ;
     
-    private final Map<String, String> authorizedVoters = new HashMap<>() ;
+    public static final Map<String, String> authorizedVoters = new HashMap<>() ;
     
     public CustomSignOn() {
     }
@@ -228,18 +230,13 @@ public class CustomSignOn implements ISignOn         {
     }
     
     public static Properties readPropertiesFile(String fileName) throws IOException {
-        
-      FileInputStream fis  = null ;
-      Properties      prop = null ;
-      try {
-         fis = new FileInputStream(fileName) ;
-         prop = new Properties()  ;
-         prop.load(fis)           ;
-      } catch( IOException ioe )  {
-         ioe.printStackTrace()    ;
-      } finally {
-         fis.close();
-      }
-      return prop;
-   }
+        Properties prop = new Properties() ;
+        try (FileInputStream fis = new FileInputStream(fileName) ;
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8 )) {
+             prop.load(isr);
+        } catch (IOException e) {
+            e.printStackTrace() ;
+        }
+        return prop;
+    }
 }

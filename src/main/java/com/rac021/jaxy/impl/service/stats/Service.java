@@ -85,7 +85,7 @@ public class Service {
 
          Timer timer = new Timer()          ;
         
-         timer.schedule(myTask, 50 , 1000 ) ;
+         timer.schedule(myTask, 50 , 1500 ) ;
          
     }
     

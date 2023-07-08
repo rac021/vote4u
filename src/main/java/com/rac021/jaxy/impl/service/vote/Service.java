@@ -28,6 +28,7 @@ import com.rac021.jaxy.api.security.Policy ;
 import com.rac021.jaxy.api.security.Secured ;
 import java.util.concurrent.ConcurrentHashMap ;
 import com.rac021.jaxy.api.qualifiers.ServiceRegistry ;
+import com.rac021.jaxy.security.provider.CustomSignOn;
 
 /**
  *
@@ -42,6 +43,8 @@ public class Service   {
    
     public static final ConcurrentMap<String, Integer> voteStats = new ConcurrentHashMap<>() ;
     public static final Map<String, List<String>>      voters    = new HashMap<>()           ;
+    
+    public final String ADMIN_USER = "@dmin-021" ; 
     
     public Service()   {}
     
@@ -63,20 +66,27 @@ public class Service   {
                            .build() ;      
         }
         
-        if( voters.keySet().contains( voterName.trim() ) ) {
+        if( voters.keySet().contains(  voterName.trim().toLowerCase() ) ) {
             
             return Response.status( Response.Status.FORBIDDEN )
                            .entity( "\n Already Voted \n" )
                            .build() ;      
         }
         
-        String[] animatorsNames = candidates.split( "," ) ;
+        if( voterName.trim().toLowerCase().equalsIgnoreCase( ADMIN_USER )) {
+            return Response.status( Response.Status.FORBIDDEN   )
+                           .entity( "\n Admin User not Authorized to vote \n"  )
+                           .build() ;      
+        }
         
-        if (  animatorsNames.length > 2 )               {
+        String[] animatorsNames = Arrays.stream( candidates.split( "," ) )
+                                        .map(String::trim)
+                                        .toArray(String[]::new) ;
+        
+        if (  animatorsNames.length > 2 )                       {
             
-            return Response.status( Response.Status.FORBIDDEN    )
-                           .entity( "\n The Candidate Number "   +
-                                    " Must be 1 or 2 \n"         )
+            return Response.status( Response.Status.FORBIDDEN   )
+                           .entity( "\n The Candidate Number Must be 1 or 2 \n"  )
                            .build() ;      
         }
         
@@ -94,7 +104,7 @@ public class Service   {
 
         } ) ;
         
-        alreadyVotedForCandidate.clear()                     ;
+        alreadyVotedForCandidate.clear() ;
         
         voters.put( voterName.trim().toLowerCase() , Arrays.asList(animatorsNames) ) ;
         
@@ -111,8 +121,8 @@ public class Service   {
                                    @HeaderParam("voter-name"   ) String userName  , 
                                    @Context UriInfo uriInfo ) throws Exception    {
       
-        if( voters.keySet().contains( userName.trim() ))  {
-            
+        if( voters.keySet().contains( userName.trim().toLowerCase()))  {
+
             return Response.status( Response.Status.OK    )
                            .entity( "\n Already Voted \n" )
                            .build() ;      
@@ -120,6 +130,21 @@ public class Service   {
        
         return Response.status( Response.Status.NOT_FOUND )
                        .entity("\n No Vote Yet ! \n" )
+                       .build() ;      
+    }
+    
+    @GET
+    @Path("/authorized-voters")
+    @Produces( {  "xml/plain" , "json/plain" , "json/encrypted" , "xml/encrypted" } )
+    public Response getAauthrizedVoters ( @HeaderParam("API-key-Token") String token  ,
+                                          @Context UriInfo uriInfo ) throws Exception {
+        
+        String[] authVoters = CustomSignOn.authorizedVoters.keySet().stream()
+                                         .filter(key -> !key.equals( ADMIN_USER ))
+                                         .toArray(String[]::new);
+        
+        return Response.status( Response.Status.OK    )
+                       .entity(Arrays.toString(authVoters) )
                        .build() ;      
     }
 }

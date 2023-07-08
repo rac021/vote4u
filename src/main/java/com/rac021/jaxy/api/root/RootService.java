@@ -126,7 +126,7 @@ public class RootService implements IRootService     {
       
         Policy policy   =  servicesPolicies.get( codeService )    ;
         
-        if( policy == null || policy == Policy.Public )                             {
+        if( policy == null || policy == Policy.Public )                           {
             
             if( accept != null && accept.contains("encrypted") )  {
                 throw new BusinessException(" Public Services can't be Encrypted ") ;

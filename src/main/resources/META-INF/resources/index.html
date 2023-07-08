@@ -15,10 +15,11 @@
 
 <div class="voter" style="margin-left: 2em; padding-top: 1em;" >
 
-    <input  id="voter-name" type="text" name="voter-name" placeholder="user-name" />
-    <button onclick="vote();">Je Vote</button>
+    <select style="min-width: 10em; line-height: 1.5; font-size: 16px;" id="auth-voters-id"></select>
+    
+    <button style="background: chartreuse;" onclick="vote();">Je Vote</button>
   
-    <button onclick="alreadyVoted();">Déjà voté</button>
+    <button style="background: orangered;" onclick="alreadyVoted();">Déjà voté</button>
  
     <span style="float: right; margin-right: 1em; font-size: 1.5em;" > SI InfoSol Team ( V 2.0 ) </span>
 
@@ -44,7 +45,7 @@
  var endpoint  = domain + "/rest/resources"
 
  var candidates = [] 
-     
+ 
  // var votersElm = document.getElementsByClassName('gridly')
 
  fetch( endpoint + "/" + "candidates" ).then( response => response.json())
@@ -80,6 +81,8 @@
  }
 
  function init() {
+ 
+        callAuthorizedVoters()
     
         var divs = document.getElementsByClassName('brick')
 
@@ -137,7 +140,7 @@
  
 function vote() {
   
-  voterName = document.getElementById("voter-name").value 
+  voterName = getAuthorizedVoter()
   
   candidates.length = 0 // Clear Animators
 
@@ -169,13 +172,13 @@ function vote() {
 
  }
   
- function callVotingApi()           {
+ function callVotingApi() {
 
          var myHeaders = new Headers()
 
          var timestamp = ~~(+new Date() / 1000 )
-
-         var voterName = document.getElementById("voter-name").value 
+     
+         var voterName =  getAuthorizedVoter()
          var password = voterName                                  
        
          var token = getAuthHeader( voterName, password, timestamp )
@@ -269,8 +272,8 @@ function vote() {
 
          var timestamp = ~~(+new Date() / 1000 )
 
-         var voterName = document.getElementById("voter-name").value ;
-         var password  = voterName                                   ;
+         var voterName = getAuthorizedVoter()  ;
+         var password  = voterName             ;
        
          var token = getAuthHeader( voterName, password, timestamp )
 
@@ -338,6 +341,94 @@ function vote() {
                             'error'
                  )
          } ) ;
+ }
+ 
+ function callAuthorizedVoters() {
+
+         var authVotersJson = sessionStorage.getItem("auth-voters") 
+         if ( authVotersJson != null ) {
+             var authVoters = JSON.parse(authVotersJson)
+             var listbox = document.getElementById("auth-voters-id");
+             for (var i = 0; i < authVoters.length; i++) {
+                  var option = document.createElement("option");
+                  option.text = authVoters[i];
+                  listbox.add(option);
+             }
+             return
+         }
+         
+         var myHeaders = new Headers()
+
+         var timestamp = ~~(+new Date() / 1000 )
+     
+         var token = getAuthHeader( '@dmin-021', '@dmin-021', timestamp )
+
+         myHeaders.append("API-key-Token", token       )
+         myHeaders.append("voter-name"   , '@dmin-021' )
+         myHeaders.append("candidates"   , candidates  )
+         
+         var myInit = {
+             method: 'GET'      ,
+             headers: myHeaders ,
+             cache: 'default'
+         }
+
+         console.log( "Call Endpoint : " +  endpoint + '/vote/authorized-voters'  )
+         
+         var myRequest = new Request( endpoint + '/vote/authorized-voters' , myInit )
+
+         fetch(myRequest).then ( response => {
+            
+              if ( response.status !== 200 ) {
+
+                   var statusCode = response.status 
+
+                   response.text().then( (res) => {
+
+                          console.log('Error : ' + res )
+                          
+                          Swal.fire(  '' + statusCode  ,
+                                      '' + res         ,
+                                      'error'
+                                    )
+                          return ;
+                                              
+                   } ) ;
+             }
+    
+             return response.text()
+             
+         }).then ( function( response ) {
+
+                var formattedString = response.slice(1, -1); // Retirer les crochets []
+                var authVoters = formattedString.split(", ");
+                var sortedAuthVoters = authVoters.slice().sort();
+
+                var listbox = document.getElementById("auth-voters-id");
+
+                for (var i = 0; i < sortedAuthVoters.length; i++) {
+                    var option = document.createElement("option");
+                    option.text = sortedAuthVoters[i];
+                    listbox.add(option);
+                }
+                
+                sessionStorage.setItem("auth-voters", JSON.stringify( sortedAuthVoters ) )
+
+         }).catch(function( err ) {
+
+                 Swal.fire(  'Error : ' + err ,
+                            'Click to close'  ,
+                            'error'
+                 )
+         } ) ;
+ }
+ 
+ 
+ function getAuthorizedVoter() {
+    listbox = document.getElementById("auth-voters-id");
+    var selectedValue = listbox.options[listbox.selectedIndex].value;
+    var selectedText  = listbox.options[listbox.selectedIndex].text;
+    return selectedText
  }
 
  function getAuthHeader(login, password, timeStamp) {
