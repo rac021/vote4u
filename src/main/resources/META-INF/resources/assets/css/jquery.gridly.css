@@ -24,14 +24,22 @@ body, html {
 .gridly .brick.small {
     width: 140px;
     height: 140px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .gridly .brick.large {
     width: 300px;
     height: 300px;
     border: double;
-    border-width: 0.2em 0.2em;
+    border-width: 0.3em 0.3em;
     border-color: crimson;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .gridly .brick {
@@ -50,13 +58,13 @@ body, html {
     display: block;
     color: black;
     background: rgba(255, 255, 255, 0.2);
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     top: 0;
     right: 0;
     position: absolute;
     text-align: center;
-    line-height: 40px;
+    line-height: 20px;
 }
    
 /*

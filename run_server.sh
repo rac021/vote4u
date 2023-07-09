@@ -5,16 +5,30 @@
 
  while [[ "$#" > "0" ]] ; do
  
-  case $1 in
+     case $1 in
+     
+         (*=*) KEY=${1%%=*}
+         
+               VALUE=${1#*=}
+               
+               case "$KEY" in
+               
+                    ("keystore")   KEYSTORE_FILE="$VALUE"
+                    ;;
+                    ("password")   RAND_PASSWORD="$VALUE"
+		    ;;                   
+               esac
+         ;;
+         
+         debug)  DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=11555,server=y,suspend=y "      
+         ;;     
+         
+     esac
+     
+   shift
    
-      debug)  DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=11555,server=y,suspend=y "      
-      ;; 
-      
-  esac
-  
-  shift
-  
- done 
+ done    
+
 
 ######################################
 ##### SERVER CONFIG ##################
@@ -28,10 +42,6 @@
 
  ####################################
  ####################################
- 
- KEYSTORE_FILE="server.keystore"
- 
- RAND_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo`
  
  iVote4YouJar="vote4u-1.0-runner.jar"
  
@@ -48,21 +58,25 @@
        
     fi
  fi
-  
- # LIST_CPU="0-7" #  0 ( Only one core ) Or  0,1 ( core 0 and core 1 ) Or 0-4 ( for core 0 to core 4 ) 
- 
- if [ -f $KEYSTORE_FILE ]; then 
-   rm -f $KEYSTORE_FILE
- fi
- 
- echo ; echo
- 
- keytool -genkeypair   -storepass $RAND_PASSWORD -keyalg RSA    \
-         -keysize 2048 -dname "CN=server"        -alias server  \
-         -ext "SAN:c=DNS:localhost,IP:127.0.0.1"                \
-         -keystore $KEYSTORE_FILE --noprompt 
 
- echo
+ KEYSTORE_FILE=${KEYSTORE_FILE:-server.keystore}
+ 
+ if [ $KEYSTORE_FILE == "server.keystore" ]; then 
+    
+    RAND_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo`
+
+    if [ -f $KEYSTORE_FILE ]; then 
+      rm -f $KEYSTORE_FILE
+    fi
+    
+    echo ; echo
+    
+    keytool -genkeypair   -storepass $RAND_PASSWORD -keyalg RSA    \
+            -keysize 2048 -dname "CN=server"        -alias server  \
+            -ext "SAN:c=DNS:localhost,IP:127.0.0.1"                \
+            -keystore $KEYSTORE_FILE --noprompt 
+    echo
+ fi
 
 ######################################
   

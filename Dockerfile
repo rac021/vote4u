@@ -34,6 +34,8 @@ COPY authorized-voters.properties /app/
 
 RUN chmod +x /app/*.sh
 
+RUN mkdir /app/server
+
 COPY --from=compilation_stage /tmp/target/vote4u-1.0-runner.jar /app/
 
 WORKDIR /app

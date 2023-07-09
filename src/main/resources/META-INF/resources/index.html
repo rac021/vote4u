@@ -2,37 +2,33 @@
 <html>
 
 <head>
+    <title>Site</title>    
+    <meta charset="UTF-8" name="viewport" content="user-scalable=yes" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8" charset="UTF-8" ></script>
+    <script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/jquery-qrcode/1.0/jquery.qrcode.min.js"></script>
+    <link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
+</head>
 
-<meta charset="UTF-8" />
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8" charset="UTF-8" ></script>
-
-<script src="assets/js/jquery.gridly.js" type="text/javascript"></script>
-<script src="assets/js/auth.js"></script>  
-
-<link href="assets/css/jquery.gridly.css" rel="stylesheet" type="text/css" /> 
+<body>
 
 <div class="voter" style="margin-left: 2em; padding-top: 1em;" >
 
-    <select style="min-width: 10em; line-height: 1.5; font-size: 16px;" id="auth-voters-id"></select>
+    <select style="min-width: 15rem; line-height: 1.5; font-size: 1.2rem; padding: 0.3rem; border-radius: 0.25rem; border: 1px solid #ccc;" id="auth-voters-id"></select>
     
-    <button style="background: chartreuse;" onclick="vote();">Je Vote</button>
+    <button style="background: chartreuse; height: 2.5rem; border-radius: 10px;" onclick="vote();">Je Vote</button>
   
-    <button style="background: orangered;" onclick="alreadyVoted();">Déjà voté</button>
- 
+    <button style="background: orangered; height: 2.5rem; border-radius: 10px; color: black; " onclick="alreadyVoted();">Déjà voté</button>
+     
     <span style="float: right; margin-right: 1em; font-size: 1.5em;" > SI InfoSol Team ( V 2.0 ) </span>
 
+    <a href="#"style="float: right; margin-right: 1em; font-size: 1.5em;"  onclick="qrCode();">qrCode</a>    
+     
 </div>
 
-<div class="gridly">
-
- <!-- <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Antoine  </span> <a class="delete" href="#">×</a>  </div>
-      <div class="brick small" style="background-image: url(avatar-b.png);"   > <span style="background:yellow"> Rachid   </span> <a class="delete" href="#">×</a>  </div>
- -->
-  
-</div>
-
+<div class="gridly"> </div>
 
 <script>
 
@@ -46,23 +42,23 @@
 
  var candidates = [] 
  
- // var votersElm = document.getElementsByClassName('gridly')
-
+ var domainVote = null 
+ 
  fetch( endpoint + "/" + "candidates" ).then( response => response.json())
-                                   .then( list  => {
+                                       .then( list  => {
                      
                                          list.candidates.sort( () => Math.random() - 0.5 ).forEach ( candidate => {
                                         
                                                 var avatarGender = candidate.gender == 'boy' ? 'assets/images/avatar-b.png' : 'assets/images/avatar-g.png' 
                                                 
-                                                var vot = '<div class="brick small vib" style="background-image: url('         + avatarGender    + 
-                                                          ') ; " > <span style="background:yellow; border-radius: 5px"> '  + candidate.name  +
-                                                          '</span> <a class="delete" href="#">×</a>  </div>' 
+                                                var vot = '<div class="brick small vib" style="background-image: url('     + avatarGender    + 
+                                                          ') ; " > <span style="background: #0a0a0a; border-radius: 5px;display: inline-block;margin-top: 4.5rem;font-size: x-large;color: white;"> '  
+                                                          + candidate.name  +
+                                                          ' </span> <a class="delete" href="#">×</a>  </div>' 
                                                 
                                                 var votElm = $.parseHTML( vot )
                                                 
-                                                $( ".gridly" ).append( votElm ) 
-                                                
+                                                $( ".gridly" ).append( votElm )                                                 
                                         } ) ;
 
                                  }).then ( l =>  {
@@ -90,23 +86,22 @@
             divs[i].style.backgroundColor = getRandomColor()
         }
 
-        $('.gridly').gridly('draggable','on')
-
+        $('.gridly').gridly('draggable','off') // on
+        
         $('.gridly').gridly ({
 
             base: 60, 
             gutter: 20, 
-            columns: 15,
+            columns: 10,
             
             // drag handle
             draggable: {
                 zIndex: 800,
                 selector: '> *'
-            }
-        
+            }                   
         });
             
-        $(document).on("click", ".gridly .delete", function(event) {
+        $('.gridly .delete').on("click", function(event) {
             var $this
             event.preventDefault()
             event.stopPropagation()
@@ -114,28 +109,137 @@
             $this.closest('.brick').remove()
             return $('.gridly').gridly('layout')
         });
+        
+        // var tapped=false
+        // $(".brick").on("touchstart",function(e){
+        //     //e.preventDefault;
+        //     if(!tapped){ //if tap is not set, set up single tap
+        //     tapped=setTimeout(function(e) {
+        //         tapped=null
+        //         //insert things you want to do when single tapped
+        //          // $('.gridly').gridly('draggable','off')
+        //          // e.preventDefault();
+        //     }, 300 ) ;     //wait 300ms then run single click code
+        //     } else {    //tapped within 300ms of last tap. double tap
+        //        e.preventDefault()
+        //        clearTimeout(tapped); //stop single tap callback
+        //        tapped=null
+        //        //insert things you want to do when double tapped
+        //        if (e.touches == null || e.touches.length == 1) {
+        //             //alert("IN SINGLE TOUCH!")
+        //             var $this = $(this);
+        //             setTimeout(function() {
+        //                 // alert(' in setTimeout /////// double tap...')
+        //                 if ($this.hasClass("large")) {} 
+        //                 else {
+        //                     if ($(".gridly").find(".large").length >= 2) {
+        //                         //alert(">> 2 ")
+        //                         var large = $(".gridly").find(".large");
+        //                         $(large).toggleClass("large small");
+        //                         var size = 140;
+        //                         $(large).data('width', size);
+        //                         $(large).data('height', size);
+        //                     }
+        //                 }
+        //                 $this.toggleClass('large small');
+        //                 var size = $this.hasClass('small') ? 140 : 300;
+        //                 $this.data('width', size);
+        //                 $this.data('height', size);
+        //                 //alert(($this).children("span").html())
+        //                 $('.gridly').gridly('layout');
+        //             }.bind(this), 1);
+        //         }
+        //        // e.preventDefault()
+        //     }
+        //     // e.preventDefault()
+        // });
+        
+        
+        // $('.brick').on('doubletap', function(e) {
+        //          e.preventDefault;
+        //          alert("double tap")
+        //         $this = $(this);
+        //         if ($($this).hasClass("large")) {} 
+        //         else {
+        //             if ($(".gridly").find(".large").length >= 2 ) {
+        //                 var large = $(".gridly").find(".large")
+        //                 $(large).toggleClass("large small")
+        //                 size = 140
+        //                 $(large).data('width', size)
+        //                 $(large).data('height', size)
+        //             }
+        //         }
+        //         $this.toggleClass('large small')
+        //         size = $this.hasClass('small') ? 140 : 300 
+        //         $this.data('width', size)
+        //         $this.data('height', size)
+        //         // alert(($this).children("span").html())
+        //         return $('.gridly').gridly('layout') 
+        // });
+        
+        var lastTapTime = 0;
+        var doubleTapDelay = 300; // Délai (en millisecondes) pour détecter un double-tap
 
+        $('.brick').on('touchstart', function(e) {
+            if (e.touches.length === 2) {
+                return
+            }            
+            var currentTime = new Date().getTime();
+            var tapTimeDiff = currentTime - lastTapTime;
+            if (tapTimeDiff < doubleTapDelay) {
+                e.preventDefault(); 
+                e.stopPropagation()
+                handleDoubleAction($(this));
+            }
+            lastTapTime = currentTime;
+        });
 
-        $('.brick').click(function () {
+        $('.brick').on('dblclick' , function(e) {
+            e.preventDefault(); 
+            e.stopPropagation()
+            handleDoubleAction($(this));
+        });
 
-            $this = $(this);
-            if ($($this).hasClass("large")) {} else {
-                if ($(".gridly").find(".large").length >= 2 ) {
-                    var large = $(".gridly").find(".large")
-                    $(large).toggleClass("large small")
-                    size = 140
-                    $(large).data('width', size)
-                    $(large).data('height', size)
+        function handleDoubleAction($element) {
+            if (!$element.hasClass("large")) {
+                if ($(".gridly").find(".large").length >= 2) {
+                    var large = $(".gridly").find(".large");
+                    $(large).toggleClass("large small");
+                    var size = 140;
+                    $(large).data('width', size);
+                    $(large).data('height', size);
                 }
             }
-            $this.toggleClass('large small')
-            size = $this.hasClass('small') ? 140 : 300 
-            $this.data('width', size)
-            $this.data('height', size)
-            // alert(($this).children("span").html())
-            return $('.gridly').gridly('layout')
+            $element.toggleClass('large small');
+            var size = $element.hasClass('small') ? 140 : 300;
+            $element.data('width', size);
+            $element.data('height', size);
+            $('.gridly').gridly('layout');
+        }
+        
+        /*
+        $('.brick').on("click touchstart", function(e) {
+            if( e.touches == null || e.touches.length == 1 ) {
+                $this = $(this);
+                if ($($this).hasClass("large")) {} 
+                else {
+                    if ($(".gridly").find(".large").length >= 2 ) {
+                        var large = $(".gridly").find(".large")
+                        $(large).toggleClass("large small")
+                        size = 140
+                        $(large).data('width', size)
+                        $(large).data('height', size)
+                    }
+                }
+                $this.toggleClass('large small')
+                size = $this.hasClass('small') ? 140 : 300 
+                $this.data('width', size)
+                $this.data('height', size)
+                // alert(($this).children("span").html())
+                return $('.gridly').gridly('layout') 
+            }            
         } ) ;
-
+        */
  }
  
 function vote() {
@@ -436,8 +540,34 @@ function vote() {
    return hash( login, password, "SHA2", "PLAIN", "MD5", "PLAIN", timeStamp )
  }
 
+ 
+ function qrCode() {
+
+    if( domainVote == null ) {
+        domainVote = window.location.href
+    } 
+    
+    Swal.fire({
+        title: 'Vote4u',
+        html: '<div id="qrcode"></div>',
+        width: 600,
+        showCloseButton: true,
+        showConfirmButton: false,
+        onOpen: () => {
+            //  le QR code après un court délai pour s'assurer que la boîte de dialogue est complètement ouverte
+            setTimeout(() => {
+            $("#qrcode").qrcode({ 
+                text: domainVote ,
+                width: 500,
+                height: 500
+              });
+            }, 200);
+        }
+    });
+ }
+ 
 </script>
 
-</head>
+</body>
 
 </html>
