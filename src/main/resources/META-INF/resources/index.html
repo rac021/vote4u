@@ -110,73 +110,6 @@
             return $('.gridly').gridly('layout')
         });
         
-        // var tapped=false
-        // $(".brick").on("touchstart",function(e){
-        //     //e.preventDefault;
-        //     if(!tapped){ //if tap is not set, set up single tap
-        //     tapped=setTimeout(function(e) {
-        //         tapped=null
-        //         //insert things you want to do when single tapped
-        //          // $('.gridly').gridly('draggable','off')
-        //          // e.preventDefault();
-        //     }, 300 ) ;     //wait 300ms then run single click code
-        //     } else {    //tapped within 300ms of last tap. double tap
-        //        e.preventDefault()
-        //        clearTimeout(tapped); //stop single tap callback
-        //        tapped=null
-        //        //insert things you want to do when double tapped
-        //        if (e.touches == null || e.touches.length == 1) {
-        //             //alert("IN SINGLE TOUCH!")
-        //             var $this = $(this);
-        //             setTimeout(function() {
-        //                 // alert(' in setTimeout /////// double tap...')
-        //                 if ($this.hasClass("large")) {} 
-        //                 else {
-        //                     if ($(".gridly").find(".large").length >= 2) {
-        //                         //alert(">> 2 ")
-        //                         var large = $(".gridly").find(".large");
-        //                         $(large).toggleClass("large small");
-        //                         var size = 140;
-        //                         $(large).data('width', size);
-        //                         $(large).data('height', size);
-        //                     }
-        //                 }
-        //                 $this.toggleClass('large small');
-        //                 var size = $this.hasClass('small') ? 140 : 300;
-        //                 $this.data('width', size);
-        //                 $this.data('height', size);
-        //                 //alert(($this).children("span").html())
-        //                 $('.gridly').gridly('layout');
-        //             }.bind(this), 1);
-        //         }
-        //        // e.preventDefault()
-        //     }
-        //     // e.preventDefault()
-        // });
-        
-        
-        // $('.brick').on('doubletap', function(e) {
-        //          e.preventDefault;
-        //          alert("double tap")
-        //         $this = $(this);
-        //         if ($($this).hasClass("large")) {} 
-        //         else {
-        //             if ($(".gridly").find(".large").length >= 2 ) {
-        //                 var large = $(".gridly").find(".large")
-        //                 $(large).toggleClass("large small")
-        //                 size = 140
-        //                 $(large).data('width', size)
-        //                 $(large).data('height', size)
-        //             }
-        //         }
-        //         $this.toggleClass('large small')
-        //         size = $this.hasClass('small') ? 140 : 300 
-        //         $this.data('width', size)
-        //         $this.data('height', size)
-        //         // alert(($this).children("span").html())
-        //         return $('.gridly').gridly('layout') 
-        // });
-        
         var lastTapTime = 0;
         var doubleTapDelay = 300; // Délai (en millisecondes) pour détecter un double-tap
 
@@ -201,45 +134,21 @@
         });
 
         function handleDoubleAction($element) {
-            if (!$element.hasClass("large")) {
+            if (!$element.hasClass("large"))  {
                 if ($(".gridly").find(".large").length >= 2) {
-                    var large = $(".gridly").find(".large");
-                    $(large).toggleClass("large small");
-                    var size = 140;
-                    $(large).data('width', size);
-                    $(large).data('height', size);
+                    var large = $(".gridly").find(".large")
+                    $(large).toggleClass("large small")
+                    var size = 140
+                    $(large).data('width', size)
+                    $(large).data('height', size)
                 }
             }
             $element.toggleClass('large small');
-            var size = $element.hasClass('small') ? 140 : 300;
-            $element.data('width', size);
-            $element.data('height', size);
-            $('.gridly').gridly('layout');
+            var size = $element.hasClass('small') ? 140 : 300
+            $element.data('width', size)
+            $element.data('height', size)
+            $('.gridly').gridly('layout')
         }
-        
-        /*
-        $('.brick').on("click touchstart", function(e) {
-            if( e.touches == null || e.touches.length == 1 ) {
-                $this = $(this);
-                if ($($this).hasClass("large")) {} 
-                else {
-                    if ($(".gridly").find(".large").length >= 2 ) {
-                        var large = $(".gridly").find(".large")
-                        $(large).toggleClass("large small")
-                        size = 140
-                        $(large).data('width', size)
-                        $(large).data('height', size)
-                    }
-                }
-                $this.toggleClass('large small')
-                size = $this.hasClass('small') ? 140 : 300 
-                $this.data('width', size)
-                $this.data('height', size)
-                // alert(($this).children("span").html())
-                return $('.gridly').gridly('layout') 
-            }            
-        } ) ;
-        */
  }
  
 function vote() {
