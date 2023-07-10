@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 
-<html style=" background: linear-gradient(#13161b5c, #9198e5); height: 98%;" >
-  
+<html style="background: linear-gradient(#13161b5c, #9198e5); height: 100vh;" >
+
 <head>
 
   <meta charset="UTF-8" />
@@ -128,8 +128,8 @@ function call_stats() {
              elementsContainer.innerHTML = ''
             
             // Itération sur les paires clé-valeur de l'objet
-            let index = 0
-            const keys = Object.keys( recievedData.voters );
+            let index  = 0
+            const keys = Object.keys( recievedData.voters )
 
             for (const voter in recievedData.voters ) {
               
@@ -155,11 +155,9 @@ function call_stats() {
                 elementsContainer.appendChild(document.createTextNode(':'))
                 elementsContainer.appendChild(spanValue)
                 
-                if ( index++ <  keys.length - 1 ) {
-                    elementsContainer.appendChild( document.createTextNode(' // ') )
+                if ( index++ < keys.length - 1 ) {
+                    elementsContainer.appendChild( document.createTextNode(' ; ') )
                 }
-
-                // index++;
               }
            }
          }
@@ -203,32 +201,32 @@ function getAuthHeader(login, password, timeStamp) {
 
 <body>
 
-  <div style="padding: 1em; float: left; "> <a href="index.html">Back</a> </div>
+  <div style="padding-left: 2.7em;float: left;font-size: x-large; "> <a href="index.html">Back</a> </div>
  
-  <div id="chartContainer" style=" height: 35em; max-width: 80em; padding: 2em; margin: 1em auto;  "></div> 
+  <div id="chartContainer" style=" height: 35em; max-width: 90% ; padding: 2.5em 2em; margin: 2em 5em 2em 2em;  "> </div> 
   
-  <div id="chartContainer" style=" height: 10em; max-width: 80em; padding: 2em; margin: 1em auto;  ">
-      <div id="voters"></div>
-  </div> 
-  
+  <div id="voters" style=" margin-top: 4em; margin-left: 4em;  max-width: 90%;"></div>
+
 </body>
 
 <style>
     .even {
-      background-color: #d6d6ff;
+      background-color: #9affca;
       color: black;
       margin-left: 2px;
-      font-size: larger;
-      border-radius: 6px;
+      font-size: x-large;
+      border-radius: 3px;
       display: inline-block;
+      padding: 0em 0.5em;
     }
     .odd {
       background-color: #73cdff;
       color: #111010;
       margin: 4px;
-      font-size: larger;
-      border-radius: 6px;
+      font-size: x-large;
+      border-radius: 3px;
       display: inline-block;
+      padding: 0em 0.5em;
     }
 </style>
 

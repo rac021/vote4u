@@ -32,13 +32,13 @@
 
 <script>
 
- var url       = window.location.href
+ var url        = window.location.href
 
- var arr       = url.split("/") 
+ var arr        = url.split("/") 
 
- var domain    = arr[0] + "//" + arr[2]
+ var domain     = arr[0] + "//" + arr[2]
 
- var endpoint  = domain + "/rest/resources"
+ var endpoint   = domain + "/rest/resources"
 
  var candidates = [] 
  
@@ -102,12 +102,36 @@
         });
             
         $('.gridly .delete').on("click", function(event) {
-            var $this
-            event.preventDefault()
-            event.stopPropagation()
-            $this = $(this)
-            $this.closest('.brick').remove()
-            return $('.gridly').gridly('layout')
+            var self = $(this);
+            Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: "Vous ne pourrez pas revenir en arrière !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor:  '#d33',
+            confirmButtonText:  'Oui, Supprimer !'
+            }).then((result) => {
+            if (result.value) {
+                self.closest('.brick').remove()
+                $('.gridly').gridly('layout') 
+                Swal.fire(
+                'Supprimé !',
+                'Votre fichier a été supprimé.',
+                'success'
+                );
+            }
+            })
+            /*
+            const response = confirm("Delete ? ")
+            if (response) {                
+                event.preventDefault()
+                event.stopPropagation()
+                var $this = $(this)
+                $this.closest('.brick').remove()
+                return $('.gridly').gridly('layout')            
+            }
+            */
         });
         
         var lastTapTime = 0;

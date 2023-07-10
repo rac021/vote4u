@@ -3,9 +3,9 @@
  * 1.3.0
  */
 
-body, html {
+html {
   background: linear-gradient(#13161b5c, #9198e5);
-  height: 98%;
+  height: 100vh;
 }
 
 .gridly, .gridly > :not(.dragging) {
