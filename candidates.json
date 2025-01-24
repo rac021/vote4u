@@ -7,7 +7,7 @@
     },
     {
       "id": 2,
-      "name": "Antoine",
+      "name": "Alain.P",
       "gender": "boy"
     },
     {
@@ -17,13 +17,13 @@
     },
     {
       "id": 4,
-      "name": "Hakima",
-      "gender": "girl"
+      "name": "J-Philippe",
+      "gender": "boy"
     },
     {
       "id": 5,
-      "name": "J-Philippe",
-      "gender": "boy"
+      "name": "Hakima",
+      "gender": "girl"
     },
     {
       "id": 6,
@@ -34,15 +34,15 @@
       "id": 7,
       "name": "Julien",
       "gender": "boy"
-    },
+    },    
     {
       "id": 8,
-      "name": "Alain.P",
+      "name": "Yohann",
       "gender": "boy"
     },
     {
       "id": 9,
-      "name": "Yohann",
+      "name": "Benoit",
       "gender": "boy"
     },
     {
@@ -67,8 +67,8 @@
     },
     {
       "id": 14,
-      "name": "Manuel",
-      "gender": "boy"
+      "name": "Line",
+      "gender": "girl"
     },
     {
       "id": 15,
@@ -82,18 +82,8 @@
     },
     {
       "id": 17,
-      "name": "Line",
+      "name": "Juliette",
       "gender": "girl"
-    },
-    {
-      "id": 18,
-      "name": "Benoit.M",
-      "gender": "boy"
-    },
-    {
-      "id": 19,
-      "name": "Eoghann",
-      "gender": "boy"
     }    
   ]
 }
